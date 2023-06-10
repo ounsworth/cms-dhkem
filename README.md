@@ -1,6 +1,6 @@
-# TODO - Your title
+# Use of (Elliptic Curve) Diffie-Hellman KEM in the Cryptographic Message Syntax (CMS)
 
-This is the working area for the IETF [OUNSWORTH Working Group](https://datatracker.ietf.org/wg/ounsworth/documents/) Internet-Draft, "TODO - Your title".
+This is the working area for the IETF [LAMPS Working Group](https://datatracker.ietf.org/wg/lamps/documents/) Internet-Draft, "Use of (Elliptic Curve) Diffie-Hellman KEM in the Cryptographic Message Syntax (CMS)".
 
 * [Editor's Copy](https://EntrustCorporation.github.io/cms-dhkem/#go.draft-ietf-ounsworth-cms-dhkem.html)
 * [Datatracker Page](https://datatracker.ietf.org/doc/draft-ietf-ounsworth-cms-dhkem)
