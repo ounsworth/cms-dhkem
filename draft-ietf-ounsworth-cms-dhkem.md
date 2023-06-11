@@ -1,5 +1,6 @@
 ---
-title: "Use of (Elliptic Curve) Diffie-Hellman KEM in the Cryptographic Message Syntax (CMS)"
+title: "
+"
 abbrev: "CMS DHKEM"
 category: std
 
@@ -131,21 +132,142 @@ recipient's static public key.
 
 {::boilerplate bcp14-tagged}
 
+# Cryptographic dependencies
+
+## Key Derivation Function
+
+A key derivation function (KDF):
+
+* `Extract(salt, ikm)`: Extract a pseudorandom key of fixed length `keyLength` bytes from input keying material `ikm` and an optional byte string `salt`.
+* `Expand(prk, info, L)`: Expand a pseudorandom key `prk` using optional string info into `L` bytes of output keying material.
+* `keyLength`: The output size of the `Extract()` function in bytes.
+
+## (Elliptic Curve) Diffie Hellman
+
+An elliptic curve or finite field Diffie-Hellman group providing the following operations:
+
+* `GenerateKeyPair()`: create a new DH key.
+* `DH(skX, pkY)`: Perform a non-interactive Diffie-Hellman exchange using the private key `skX` and public key `pkY` to produce a Diffie-Hellman shared secret of length `Ndh`. This function can raise a ValidationError as described in {{RFC9180}} Section 7.1.4.
+
+
 # DH-Based KEM (DHKEM)
 
-TODO profile RFC9180 s. 4.1 with CMS-appropriate values of kem_context.
-Also double-check what RFC5990 and kemri do, because maybe the 9180 construction is overkill for CMS with all the context strings and ExtractAndExpand steps.
+This is a straightforward application of the DHKEM construction from
+{{RFC9180}} section 4.1 which is repeated here, unmodified except
+for some nomenclature changes to line up with the CMS ASN.1 module below.
+
+~~~
+def LabeledExtract(salt, label, ikm):
+  labeled_ikm = concat("HPKE-v1", suite_id, label, ikm)
+  return kdf.Extract(salt, labeled_ikm)
+
+def LabeledExpand(prk, label, info, keyLength):
+  labeled_info = concat(I2OSP(keyLength, 2), "HPKE-v1", suite_id,
+                        label, info)
+  return kdf.Expand(prk, labeled_info, keyLength)
+
+def ExtractAndExpand(dh, kem_context):
+  eae_prk = LabeledExtract("", "eae_prk", dh)
+  shared_secret = LabeledExpand(eae_prk, "shared_secret",
+                                kem_context, keyLength)
+  return shared_secret
+
+
+def Encap(pkR):
+  skE, pkE = dh.GenerateKeyPair()
+  dhss = dh.DH(skE, pkR)
+  enc = SerializePublicKey(pkE)
+
+  pkRm = SerializePublicKey(pkR)
+  kem_context = concat(enc, pkRm)
+
+  shared_secret = ExtractAndExpand(dh, kem_context)
+  return shared_secret, enc
+
+
+def Decap(enc, skR):
+  pkE = DeserializePublicKey(enc)
+  dhss = dh.DH(skR, pkE)
+
+  pkRm = SerializePublicKey(pk(skR))
+  kem_context = concat(enc, pkRm)
+
+  shared_secret = ExtractAndExpand(dh, kem_context)
+  return shared_secret
+~~~
+
+EDNOTE: should we further domain-separate this, for example by adding a context string `kem_context = concat("cms-dhkem", enc, pkRm)` ?
+
 
 # ASN.1 Module
 
-TODO
+In order to carry a DHKEM inside a CMS KEMRecipientInfo {{I-D.ietf-lamps-cms-kemri}},
+we define `id-kem-dhkem`, `kema-dhkem`, and `DHKemParameters`.
 
+~~~
+<CODE BEGINS>
+  CMS-KEMRecipientInfo-2023
+    { iso(1) member-body(2) us(840) rsadsi(113549)
+      pkcs(1) pkcs-9(9) smime(16) modules(0)
+      id-mod-cms-dhkem-2023(TBD1) }
+
+  DEFINITIONS IMPLICIT TAGS ::=
+  BEGIN
+  -- EXPORTS ALL;
+
+  -- BEGIN IMPORTS
+    KEM-ALGORITHM
+      FROM KEMAlgorithmInformation-2023 -- [I-D.ietf-lamps-cms-kemri]
+        { iso(1) identified-organization(3) dod(6) internet(1)
+          security(5) mechanisms(5) pkix(7) id-mod(0)
+          id-mod-kemAlgorithmInformation-2023(TBD3) }
+
+    pk-dh, pk-ec
+      FROM PKIXAlgs-2009
+         { iso(1) identified-organization(3) dod(6) internet(1)
+           security(5) mechanisms(5) pkix(7) id-mod(0)
+           id-mod-pkix1-algorithms2008-02(56) }
+
+    pk-x25519, pk-x448
+      FROM Safecurves-pkix-18
+        { iso(1) identified-organization(3) dod(6) internet(1)
+          security(5) mechanisms(5) pkix(7) id-mod(0)
+          id-mod-safecurves-pkix(93) }
+
+  -- END IMPORTS
+
+
+  id-kem-dhkem OID ::= {
+      iso(1) member-body(2) us(840) rsadsi(113549) pkcs(1)
+      pkcs-9(9) smime(16) alg(3) TBD4
+   }
+
+  kema-dhkem KEM-ALGORITHM ::= {
+      IDENTIFIER id-kem-dhkem
+      PARAMS TYPE DHKemParameters ARE optional
+      PUBLIC-KEYS { pk-dh | pk-ec | pk-x25519 | pk-x448 }
+      UKM ARE optional
+      SMIME-CAPS { TYPE DHKemParameters
+             IDENTIFIED BY id-kem-dhkem }
+  }
+
+  DHKemParameters ::= {
+      dh                     AlgorithmIdenfifier
+      kdf  KeyDerivationFunction,
+      keyLength              KeyLength
+  }
+
+<CODE ENDS>
+~~~
+
+EDNOTE: The other way to define this would be to call out a toplevel DHKEM for each one: `id-kema-dhkem-dh` `id-kema-dhkem-ecdh`, `id-kema-dhkem-x25519`, `id-kema-dhkem-x448`.
+EDNOTE: This approach adds a layer of wrapping for the benefit of agility and future-proofing. I would be happy to write them each out if that's considered better.
 
 # Security Considerations
 
-TODO Security
-The hope is that this draft does not add any security considerations above
-those already present for the Epheremal-Static mode of the underlying (EC)DH primitive.
+This document does not add any security considerations above
+those already present for the Epheremal-Static mode of the underlying (EC)DH primitive
+and in {{RFC9180}}.
 
 
 # IANA Considerations
