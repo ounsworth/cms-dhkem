@@ -66,12 +66,14 @@ informative:
 
 --- abstract
 
-The Cryptographic Message Syntax (CMS) supports key transport and
-key agreement algorithms.  In recent years, cryptographers have been
-specifying Key Encapsulation Mechanism (KEM) algorithms, including
-quantum-secure KEM algorithms.  This document defines a mechanism
+The DHKEM Algorithm is a one-pass (store-and-forward)
+   mechanism for establishing keying data to a recipient using the
+   recipient's Diffie-Hellman or elliptic curve Diffie-Hellman public key.
+This document defines a mechanism
 to wrap Ephemeral-Static (E-S) Diffie-Hellman (DH) and Elliptic Curve
 Diffie-Hellman (ECDH) to fit the KEM interface.
+This is a sister document to RSA-KEM {{RFC5990}} and simplifies future
+cryptographic protocol design by only needing to handle KEMs at the protocol level.
 
 
 --- middle
@@ -205,59 +207,65 @@ In order to carry a DHKEM inside a CMS KEMRecipientInfo {{I-D.ietf-lamps-cms-kem
 we define `id-kem-dhkem`, `kema-dhkem`, and `DHKemParameters`.
 
 ~~~
-<CODE BEGINS>
-  CMS-KEMRecipientInfo-2023
+CMS-DHKEM-2023
     { iso(1) member-body(2) us(840) rsadsi(113549)
       pkcs(1) pkcs-9(9) smime(16) modules(0)
-      id-mod-cms-dhkem-2023(TBD1) }
+      id-mod-cms-dhkem-2023(99) }
 
   DEFINITIONS IMPLICIT TAGS ::=
   BEGIN
   -- EXPORTS ALL;
 
-  -- BEGIN IMPORTS
-    KEM-ALGORITHM
-      FROM KEMAlgorithmInformation-2023 -- [I-D.ietf-lamps-cms-kemri]
-        { iso(1) identified-organization(3) dod(6) internet(1)
-          security(5) mechanisms(5) pkix(7) id-mod(0)
-          id-mod-kemAlgorithmInformation-2023(TBD3) }
+  IMPORTS
 
-    pk-dh, pk-ec
-      FROM PKIXAlgs-2009
-         { iso(1) identified-organization(3) dod(6) internet(1)
-           security(5) mechanisms(5) pkix(7) id-mod(0)
-           id-mod-pkix1-algorithms2008-02(56) }
+  AlgorithmIdentifier{}, KEY-AGREE, KEY-DERIVATION
+    FROM AlgorithmInformation-2009
+      { iso(1) identified-organization(3) dod(6) internet(1)
+        security(5) mechanisms(5) pkix(7) id-mod(0)
+        id-mod-algorithmInformation-02(58) }
 
-    pk-x25519, pk-x448
-      FROM Safecurves-pkix-18
-        { iso(1) identified-organization(3) dod(6) internet(1)
-          security(5) mechanisms(5) pkix(7) id-mod(0)
-          id-mod-safecurves-pkix(93) }
+   KEM-ALGORITHM
+     FROM KEMAlgorithmInformation-2023 -- [I-D.ietf-lamps-cms-kemri]
+       { iso(1) identified-organization(3) dod(6) internet(1)
+         security(5) mechanisms(5) pkix(7) id-mod(0)
+         id-mod-kemAlgorithmInformation-2023(99) }
 
-  -- END IMPORTS
+   pk-dh, pk-ec
+     FROM PKIXAlgs-2009
+       { iso(1) identified-organization(3) dod(6) internet(1)
+         security(5) mechanisms(5) pkix(7) id-mod(0)
+         id-mod-pkix1-algorithms2008-02(56) }
+
+  pk-X25519, pk-X448
+    FROM Safecurves-pkix-18
+      { iso(1) identified-organization(3) dod(6) internet(1)
+        security(5) mechanisms(5) pkix(7) id-mod(0)
+        id-mod-safecurves-pkix(93) } ;
 
 
-  id-kem-dhkem OID ::= {
-      iso(1) member-body(2) us(840) rsadsi(113549) pkcs(1)
-      pkcs-9(9) smime(16) alg(3) TBD4
-   }
+  id-alg-dhkem OBJECT IDENTIFIER ::= { iso(1) member-body(2) us(840)
+      rsadsi(113549) pkcs(1) pkcs-9(9) smime(16) alg(3) 99 }
 
   kema-dhkem KEM-ALGORITHM ::= {
-      IDENTIFIER id-kem-dhkem
-      PARAMS TYPE DHKemParameters ARE optional
-      PUBLIC-KEYS { pk-dh | pk-ec | pk-x25519 | pk-x448 }
+      IDENTIFIER id-alg-dhkem
+      PARAMS TYPE DHKemParameters
+      PUBLIC-KEYS { pk-dh | pk-ec | pk-X25519 | pk-X448 }
       UKM ARE optional
-      SMIME-CAPS { TYPE DHKemParameters
-             IDENTIFIED BY id-kem-dhkem }
-  }
+      SMIME-CAPS { TYPE DHKemParameters IDENTIFIED BY id-kem-dhkem } }
 
-  DHKemParameters ::= {
-      dh                     AlgorithmIdenfifier
-      kdf  KeyDerivationFunction,
-      keyLength              KeyLength
-  }
+  DHKemParameters ::= SEQUENCE {
+      dh         KeyAgreeAlgorithmIdentifier,
+      kdf        KeyDerivationFunction,
+      keyLength  KeyLength }
 
-<CODE ENDS>
+  KeyAgreeAlgorithmIdentifier ::= AlgorithmIdentifier{ KEY-AGREE, {...} }
+
+  KeyDerivationFunction ::= AlgorithmIdentifier { KEY-DERIVATION, {...} }
+
+  KeyLength ::= INTEGER (1..MAX)
+
+END
+
 ~~~
 
 EDNOTE: The other way to define this would be to call out a toplevel DHKEM for each one: `id-kema-dhkem-dh` `id-kema-dhkem-ecdh`, `id-kema-dhkem-x25519`, `id-kema-dhkem-x448`.
