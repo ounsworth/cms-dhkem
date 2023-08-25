@@ -1,6 +1,5 @@
 ---
-title: "
-"
+title: "Use of the DH-Based KEM (DHKEM) in the Cryptographic Message Syntax (CMS)"
 abbrev: "CMS DHKEM"
 category: std
 
@@ -67,13 +66,15 @@ informative:
 --- abstract
 
 The DHKEM Algorithm is a one-pass (store-and-forward)
-   mechanism for establishing keying data to a recipient using the
-   recipient's Diffie-Hellman or elliptic curve Diffie-Hellman public key.
+mechanism for establishing keying data to a recipient using the
+recipient's Diffie-Hellman or elliptic curve Diffie-Hellman public key.
 This document defines a mechanism
 to wrap Ephemeral-Static (E-S) Diffie-Hellman (DH) and Elliptic Curve
-Diffie-Hellman (ECDH) to fit the KEM interface.
+Diffie-Hellman (ECDH) such that it can be used in KEM interfaces
+within the Cryptographic Message Syntax (CMS).
 This is a sister document to RSA-KEM {{RFC5990}} and simplifies future
-cryptographic protocol design by only needing to handle KEMs at the protocol level.
+cryptographic protocol design by only needing to handle KEMs at the
+protocol level.
 
 
 --- middle
@@ -274,7 +275,7 @@ EDNOTE: This approach adds a layer of wrapping for the benefit of agility and fu
 # Security Considerations
 
 This document does not add any security considerations above
-those already present for the Epheremal-Static mode of the underlying (EC)DH primitive
+those already present for the Ephemeral-Static mode of the underlying (EC)DH primitive
 and in {{RFC9180}}.
 
 
