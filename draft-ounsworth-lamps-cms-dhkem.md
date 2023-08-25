@@ -3,7 +3,7 @@ title: "Use of the DH-Based KEM (DHKEM) in the Cryptographic Message Syntax (CMS
 abbrev: "CMS DHKEM"
 category: std
 
-docname: draft-ietf-ounsworth-cms-dhkem-latest
+docname: draft-ounsworth-lamps-cms-dhkem-latest
 ipr: trust200902
 submissiontype: IETF  # also: "independent", "IAB", or "IRTF"
 number:
