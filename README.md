@@ -2,7 +2,7 @@
 
 This is the working area for the IETF [LAMPS Working Group](https://datatracker.ietf.org/wg/lamps/documents/) Internet-Draft, "Use of (Elliptic Curve) Diffie-Hellman KEM in the Cryptographic Message Syntax (CMS)".
 
-* [Editor's Copy](https://ounsworth.github.io/cms-dhkem/#go.draft-ietf-ounsworth-cms-dhkem.html)
+* [Editor's Copy](https://ounsworth.github.io/cms-dhkem/)
 * [Datatracker Page](https://datatracker.ietf.org/doc/draft-ietf-ounsworth-cms-dhkem)
 * [Working Group Draft](https://datatracker.ietf.org/doc/html/draft-ietf-ounsworth-cms-dhkem)
 * [Compare Editor's Copy to Working Group Draft](https://ounsworth.github.io/cms-dhkem/#go.draft-ietf-ounsworth-cms-dhkem.diff)
