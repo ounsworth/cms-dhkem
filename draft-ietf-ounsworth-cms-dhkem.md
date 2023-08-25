@@ -56,11 +56,11 @@ normative:
   RFC5083:
   RFC5280:
   RFC5652:
+  I-D.ietf-lamps-cms-kemri:
 
 informative:
   RFC5990:
   RFC9180:
-  I-D.ietf-lamps-cms-kemri:
 
 
 --- abstract
@@ -156,51 +156,13 @@ An elliptic curve or finite field Diffie-Hellman group providing the following o
 # DH-Based KEM (DHKEM)
 
 This is a straightforward application of the DHKEM construction from
-{{RFC9180}} section 4.1 which is repeated here, unmodified except
-for some nomenclature changes to line up with the CMS ASN.1 module below.
+{{RFC9180}} section 4.1 which is to be used unmodified.
 
-~~~
-def LabeledExtract(salt, label, ikm):
-  labeled_ikm = concat("HPKE-v1", suite_id, label, ikm)
-  return kdf.Extract(salt, labeled_ikm)
+CMS encrypt operations performed by the sender are to use `Encap(pkR)`.
+CMS decrypt operations performed by the received are to use `Decap(enc, skR)`.
 
-def LabeledExpand(prk, label, info, keyLength):
-  labeled_info = concat(I2OSP(keyLength, 2), "HPKE-v1", suite_id,
-                        label, info)
-  return kdf.Expand(prk, labeled_info, keyLength)
-
-def ExtractAndExpand(dh, kem_context):
-  eae_prk = LabeledExtract("", "eae_prk", dh)
-  shared_secret = LabeledExpand(eae_prk, "shared_secret",
-                                kem_context, keyLength)
-  return shared_secret
-
-
-def Encap(pkR):
-  skE, pkE = dh.GenerateKeyPair()
-  dhss = dh.DH(skE, pkR)
-  enc = SerializePublicKey(pkE)
-
-  pkRm = SerializePublicKey(pkR)
-  kem_context = concat(enc, pkRm)
-
-  shared_secret = ExtractAndExpand(dh, kem_context)
-  return shared_secret, enc
-
-
-def Decap(enc, skR):
-  pkE = DeserializePublicKey(enc)
-  dhss = dh.DH(skR, pkE)
-
-  pkRm = SerializePublicKey(pk(skR))
-  kem_context = concat(enc, pkRm)
-
-  shared_secret = ExtractAndExpand(dh, kem_context)
-  return shared_secret
-~~~
-
-EDNOTE: should we further domain-separate this, for example by adding a context string `kem_context = concat("cms-dhkem", enc, pkRm)` ?
-
+The authenticated modes, `AuthEncap(pkR, skS)` and `AuthDecap(enc, skR, pkS)`
+do not apply to CMS.
 
 # ASN.1 Module
 
