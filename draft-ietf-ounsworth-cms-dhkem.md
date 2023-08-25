@@ -211,7 +211,7 @@ we define `id-kem-dhkem`, `kema-dhkem`, and `DHKemParameters`.
 CMS-DHKEM-2023
     { iso(1) member-body(2) us(840) rsadsi(113549)
       pkcs(1) pkcs-9(9) smime(16) modules(0)
-      id-mod-cms-dhkem-2023(99) }
+      id-mod-cms-dhkem-2023(TBDMOD) }
 
   DEFINITIONS IMPLICIT TAGS ::=
   BEGIN
@@ -245,7 +245,7 @@ CMS-DHKEM-2023
 
 
   id-alg-dhkem OBJECT IDENTIFIER ::= { iso(1) member-body(2) us(840)
-      rsadsi(113549) pkcs(1) pkcs-9(9) smime(16) alg(3) 99 }
+      rsadsi(113549) pkcs(1) pkcs-9(9) smime(16) alg(3) TBDALG }
 
   kema-dhkem KEM-ALGORITHM ::= {
       IDENTIFIER id-alg-dhkem
@@ -281,7 +281,29 @@ and in {{RFC9180}}.
 
 # IANA Considerations
 
-This document has no IANA actions.
+This document registers the OID `id-alg-dhkem`
+
+The IANA is requested to allocate a value
+from the "SMI Security for S/MIME Module Identifier" registry for the
+included ASN.1 module, and allocate values from "SMI Security for
+S/MIME Algorithms" to identify the new algorithm defined within.
+
+##  Object Identifier Allocations
+
+###  Module Registration - SMI Security for S/MIME Module Identifer
+
+-  Decimal: IANA Assigned - Replace TBDMOD
+-  Description: CMS-DHKEM-2023 - id-mod-cms-dhkem-2023
+-  References: This Document
+
+###  Object Identifier Registrations - SMI Security for S/MIME Attributes
+
+- DHKEM
+
+  - Decimal: IANA Assigned - Replace TBDALG
+  - Description: id-alg-dhkem
+  - References: This Document
+
 
 
 --- back
