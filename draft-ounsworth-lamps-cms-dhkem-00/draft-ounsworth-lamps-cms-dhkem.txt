@@ -1,0 +1,379 @@
+
+
+
+
+LAMPS                                                       M. Ounsworth
+Internet-Draft                                                   J. Gray
+Intended status: Standards Track                                 Entrust
+Expires: 26 February 2024                                     R. Housley
+                                                          Vigil Security
+                                                          25 August 2023
+
+
+  Use of the DH-Based KEM (DHKEM) in the Cryptographic Message Syntax
+                                 (CMS)
+                 draft-ounsworth-lamps-cms-dhkem-latest
+
+Abstract
+
+   The DHKEM Algorithm is a one-pass (store-and-forward) mechanism for
+   establishing keying data to a recipient using the recipient's Diffie-
+   Hellman or elliptic curve Diffie-Hellman public key.  This document
+   defines a mechanism to wrap Ephemeral-Static (E-S) Diffie-Hellman
+   (DH) and Elliptic Curve Diffie-Hellman (ECDH) such that it can be
+   used in KEM interfaces within the Cryptographic Message Syntax (CMS).
+   This is a sister document to RSA-KEM [RFC5990] and simplifies future
+   cryptographic protocol design by only needing to handle KEMs at the
+   protocol level.
+
+About This Document
+
+   This note is to be removed before publishing as an RFC.
+
+   The latest revision of this draft can be found at
+   https://EntrustCorporation.github.io/cms-dhkem/draft-ietf-ounsworth-
+   cms-dhkem.html.  Status information for this document may be found at
+   https://datatracker.ietf.org/doc/draft-ounsworth-lamps-cms-dhkem/.
+
+   Discussion of this document takes place on the Limited Additional
+   Mechanisms for PKIX and SMIME (lamps) Working Group mailing list
+   (mailto:spasm@ietf.org), which is archived at
+   https://mailarchive.ietf.org/arch/browse/spasm/.  Subscribe at
+   https://www.ietf.org/mailman/listinfo/spasm/.
+
+   Source for this draft and an issue tracker can be found at
+   https://github.com/EntrustCorporation/cms-dhkem.
+
+Status of This Memo
+
+   This Internet-Draft is submitted in full conformance with the
+   provisions of BCP 78 and BCP 79.
+
+   Internet-Drafts are working documents of the Internet Engineering
+   Task Force (IETF).  Note that other groups may also distribute
+   working documents as Internet-Drafts.  The list of current Internet-
+   Drafts is at https://datatracker.ietf.org/drafts/current/.
+
+   Internet-Drafts are draft documents valid for a maximum of six months
+   and may be updated, replaced, or obsoleted by other documents at any
+   time.  It is inappropriate to use Internet-Drafts as reference
+   material or to cite them other than as "work in progress."
+
+   This Internet-Draft will expire on 26 February 2024.
+
+Copyright Notice
+
+   Copyright (c) 2023 IETF Trust and the persons identified as the
+   document authors.  All rights reserved.
+
+   This document is subject to BCP 78 and the IETF Trust's Legal
+   Provisions Relating to IETF Documents (https://trustee.ietf.org/
+   license-info) in effect on the date of publication of this document.
+   Please review these documents carefully, as they describe your rights
+   and restrictions with respect to this document.  Code Components
+   extracted from this document must include Revised BSD License text as
+   described in Section 4.e of the Trust Legal Provisions and are
+   provided without warranty as described in the Revised BSD License.
+
+Table of Contents
+
+   1.  Introduction
+   2.  Conventions and Definitions
+   3.  Cryptographic dependencies
+     3.1.  Key Derivation Function
+     3.2.  (Elliptic Curve) Diffie Hellman
+   4.  DH-Based KEM (DHKEM)
+   5.  ASN.1 Module
+   6.  Security Considerations
+   7.  IANA Considerations
+     7.1.  Object Identifier Allocations
+       7.1.1.  Module Registration - SMI Security for S/MIME Module
+               Identifer
+       7.1.2.  Object Identifier Registrations - SMI Security for S/
+               MIME Attributes
+   8.  References
+     8.1.  Normative References
+     8.2.  Informative References
+   Acknowledgments
+   Authors' Addresses
+
+1.  Introduction
+
+   The Cryptographic Message Syntax (CMS) enveloped-data content type
+   [RFC5652] and the CMS authenticated-enveloped-data content type
+   [RFC5083] support both key transport and key agreement algorithms to
+   establish the key used to encrypt the content.  In recent years,
+   cryptographers have be specifying Key Encapsulation Mechanism (KEM)
+   algorithms, including quantum-secure KEM algorithms.  This document
+   defines conventions for wrapping Diffie-Hellman Ephemeral-Static
+   (E-S) Diffie-Hellman (DH) and Elliptic Curve Diffie-Hellman (ECDH) to
+   fit the KEM interface for the CMS enveloped-data content type and the
+   CMS authenticated-enveloped-data content type as defined in
+   [I-D.ietf-lamps-cms-kemri].  This is a parallel mechanism to
+   [RFC5990] which does the same for RSA.  The benefit is to allow
+   forward-compatibility of older DH-based ciphers into new mechanisms
+   that only support KEMs.
+
+   A KEM algorithm is a one-pass (store-and-forward) mechanism for
+   transporting random keying material to a recipient using the
+   recipient's public key.  The recipient's private key is needed to
+   recover the random keying material, which is then treated as a
+   pairwise shared secret between the originator and recipient.  A KEM
+   algorithm provides three functions:
+
+   *  KeyGen() -> (pk, sk):
+
+      Generate the public key (pk) and a private key (sk).
+
+   *  Encapsulate(pk) -> (ct, ss):
+
+      Given the recipient's public key (pk), produce a ciphertext (ct)
+      to be passed to the recipient and shared secret (ss) for the
+      originator.
+
+   *  Decapsulate(sk, ct) -> ss:
+
+      Given the private key (sk) and the ciphertext (ct), produce the
+      shared secret (ss) for the recipient.
+
+   To support a particular KEM algorithm, the CMS originator MUST
+   implement Encapsulate().
+
+   To support a particular KEM algorithm, the CMS recipient MUST
+   implement KeyGen() and Decapsulate().  The recipient's public key is
+   usually carried in a certificate [RFC5280].
+
+   This draft follows the DH-Based KEM (DHKEM) construction defined in
+   [RFC9180] whereby the Encapsulate() operation includes the generation
+   of an ephemeral key and the usage of that key against the recipient's
+   static public key.
+
+2.  Conventions and Definitions
+
+   The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
+   "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and
+   "OPTIONAL" in this document are to be interpreted as described in
+   BCP 14 [RFC2119] [RFC8174] when, and only when, they appear in all
+   capitals, as shown here.
+
+3.  Cryptographic dependencies
+
+3.1.  Key Derivation Function
+
+   A key derivation function (KDF):
+
+   *  Extract(salt, ikm): Extract a pseudorandom key of fixed length
+      keyLength bytes from input keying material ikm and an optional
+      byte string salt.
+
+   *  Expand(prk, info, L): Expand a pseudorandom key prk using optional
+      string info into L bytes of output keying material.
+
+   *  keyLength: The output size of the Extract() function in bytes.
+
+3.2.  (Elliptic Curve) Diffie Hellman
+
+   An elliptic curve or finite field Diffie-Hellman group providing the
+   following operations:
+
+   *  GenerateKeyPair(): create a new DH key.
+
+   *  DH(skX, pkY): Perform a non-interactive Diffie-Hellman exchange
+      using the private key skX and public key pkY to produce a Diffie-
+      Hellman shared secret of length Ndh. This function can raise a
+      ValidationError as described in [RFC9180] Section 7.1.4.
+
+4.  DH-Based KEM (DHKEM)
+
+   This is a straightforward application of the DHKEM construction from
+   [RFC9180] section 4.1 which is to be used unmodified.
+
+   CMS encrypt operations performed by the sender are to use Encap(pkR).
+   CMS decrypt operations performed by the received are to use
+   Decap(enc, skR).
+
+   The authenticated modes, AuthEncap(pkR, skS) and AuthDecap(enc, skR,
+   pkS) do not apply to CMS.
+
+5.  ASN.1 Module
+
+   In order to carry a DHKEM inside a CMS KEMRecipientInfo
+   [I-D.ietf-lamps-cms-kemri], we define id-kem-dhkem, kema-dhkem, and
+   DHKemParameters.
+
+CMS-DHKEM-2023
+    { iso(1) member-body(2) us(840) rsadsi(113549)
+      pkcs(1) pkcs-9(9) smime(16) modules(0)
+      id-mod-cms-dhkem-2023(TBDMOD) }
+
+  DEFINITIONS IMPLICIT TAGS ::=
+  BEGIN
+  -- EXPORTS ALL;
+
+  IMPORTS
+
+  AlgorithmIdentifier{}, KEY-AGREE, KEY-DERIVATION
+    FROM AlgorithmInformation-2009
+      { iso(1) identified-organization(3) dod(6) internet(1)
+        security(5) mechanisms(5) pkix(7) id-mod(0)
+        id-mod-algorithmInformation-02(58) }
+
+   KEM-ALGORITHM
+     FROM KEMAlgorithmInformation-2023 -- [I-D.ietf-lamps-cms-kemri]
+       { iso(1) identified-organization(3) dod(6) internet(1)
+         security(5) mechanisms(5) pkix(7) id-mod(0)
+         id-mod-kemAlgorithmInformation-2023(99) }
+
+   pk-dh, pk-ec
+     FROM PKIXAlgs-2009
+       { iso(1) identified-organization(3) dod(6) internet(1)
+         security(5) mechanisms(5) pkix(7) id-mod(0)
+         id-mod-pkix1-algorithms2008-02(56) }
+
+  pk-X25519, pk-X448
+    FROM Safecurves-pkix-18
+      { iso(1) identified-organization(3) dod(6) internet(1)
+        security(5) mechanisms(5) pkix(7) id-mod(0)
+        id-mod-safecurves-pkix(93) } ;
+
+
+  id-alg-dhkem OBJECT IDENTIFIER ::= { iso(1) member-body(2) us(840)
+      rsadsi(113549) pkcs(1) pkcs-9(9) smime(16) alg(3) TBDALG }
+
+  kema-dhkem KEM-ALGORITHM ::= {
+      IDENTIFIER id-alg-dhkem
+      PARAMS TYPE DHKemParameters
+      PUBLIC-KEYS { pk-dh | pk-ec | pk-X25519 | pk-X448 }
+      UKM ARE optional
+      SMIME-CAPS { TYPE DHKemParameters IDENTIFIED BY id-kem-dhkem } }
+
+  DHKemParameters ::= SEQUENCE {
+      dh         KeyAgreeAlgorithmIdentifier,
+      kdf        KeyDerivationFunction,
+      keyLength  KeyLength }
+
+  KeyAgreeAlgorithmIdentifier ::= AlgorithmIdentifier{ KEY-AGREE, {...} }
+
+  KeyDerivationFunction ::= AlgorithmIdentifier { KEY-DERIVATION, {...} }
+
+  KeyLength ::= INTEGER (1..MAX)
+
+END
+
+   EDNOTE: The other way to define this would be to call out a toplevel
+   DHKEM for each one: id-kema-dhkem-dh id-kema-dhkem-ecdh, id-kema-
+   dhkem-x25519, id-kema-dhkem-x448.  EDNOTE: This approach adds a layer
+   of wrapping for the benefit of agility and future-proofing.  I would
+   be happy to write them each out if that's considered better.
+
+6.  Security Considerations
+
+   This document does not add any security considerations above those
+   already present for the Ephemeral-Static mode of the underlying
+   (EC)DH primitive and in [RFC9180].
+
+7.  IANA Considerations
+
+   This document registers the OID id-alg-dhkem
+
+   The IANA is requested to allocate a value from the "SMI Security for
+   S/MIME Module Identifier" registry for the included ASN.1 module, and
+   allocate values from "SMI Security for S/MIME Algorithms" to identify
+   the new algorithm defined within.
+
+7.1.  Object Identifier Allocations
+
+7.1.1.  Module Registration - SMI Security for S/MIME Module Identifer
+
+   *  Decimal: IANA Assigned - Replace TBDMOD
+
+   *  Description: CMS-DHKEM-2023 - id-mod-cms-dhkem-2023
+
+   *  References: This Document
+
+7.1.2.  Object Identifier Registrations - SMI Security for S/MIME
+        Attributes
+
+   *  DHKEM
+
+      -  Decimal: IANA Assigned - Replace TBDALG
+
+      -  Description: id-alg-dhkem
+
+      -  References: This Document
+
+8.  References
+
+8.1.  Normative References
+
+   [I-D.ietf-lamps-cms-kemri]
+              Housley, R., Gray, J., and T. Okubo, "Using Key
+              Encapsulation Mechanism (KEM) Algorithms in the
+              Cryptographic Message Syntax (CMS)", Work in Progress,
+              Internet-Draft, draft-ietf-lamps-cms-kemri-04, 9 August
+              2023, <https://datatracker.ietf.org/doc/html/draft-ietf-
+              lamps-cms-kemri-04>.
+
+   [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
+              Requirement Levels", BCP 14, RFC 2119,
+              DOI 10.17487/RFC2119, March 1997,
+              <https://www.rfc-editor.org/rfc/rfc2119>.
+
+   [RFC5083]  Housley, R., "Cryptographic Message Syntax (CMS)
+              Authenticated-Enveloped-Data Content Type", RFC 5083,
+              DOI 10.17487/RFC5083, November 2007,
+              <https://www.rfc-editor.org/rfc/rfc5083>.
+
+   [RFC5280]  Cooper, D., Santesson, S., Farrell, S., Boeyen, S.,
+              Housley, R., and W. Polk, "Internet X.509 Public Key
+              Infrastructure Certificate and Certificate Revocation List
+              (CRL) Profile", RFC 5280, DOI 10.17487/RFC5280, May 2008,
+              <https://www.rfc-editor.org/rfc/rfc5280>.
+
+   [RFC5652]  Housley, R., "Cryptographic Message Syntax (CMS)", STD 70,
+              RFC 5652, DOI 10.17487/RFC5652, September 2009,
+              <https://www.rfc-editor.org/rfc/rfc5652>.
+
+   [RFC8174]  Leiba, B., "Ambiguity of Uppercase vs Lowercase in RFC
+              2119 Key Words", BCP 14, RFC 8174, DOI 10.17487/RFC8174,
+              May 2017, <https://www.rfc-editor.org/rfc/rfc8174>.
+
+8.2.  Informative References
+
+   [RFC5990]  Randall, J., Kaliski, B., Brainard, J., and S. Turner,
+              "Use of the RSA-KEM Key Transport Algorithm in the
+              Cryptographic Message Syntax (CMS)", RFC 5990,
+              DOI 10.17487/RFC5990, September 2010,
+              <https://www.rfc-editor.org/rfc/rfc5990>.
+
+   [RFC9180]  Barnes, R., Bhargavan, K., Lipp, B., and C. Wood, "Hybrid
+              Public Key Encryption", RFC 9180, DOI 10.17487/RFC9180,
+              February 2022, <https://www.rfc-editor.org/rfc/rfc9180>.
+
+Acknowledgments
+
+   TODO acknowledge.
+
+Authors' Addresses
+
+   Mike Ounsworth
+   Entrust Limited
+   2500 Solandt Road – Suite 100
+   Ottawa, Ontario  K2K 3G5
+   Canada
+   Email: mike.ounsworth@entrust.com
+
+
+   John Gray
+   Entrust Limited
+   2500 Solandt Road – Suite 100
+   Ottawa, Ontario  K2K 3G5
+   Canada
+   Email: john.gray@entrust.com
+
+
+   Russ Housley
+   Vigil Security, LLC
+   Herndon, VA,
+   United States of America
+   Email: housley@vigilsec.com

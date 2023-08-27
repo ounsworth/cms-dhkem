@@ -1,0 +1,144 @@
+{
+  "magic": "E!vIA5L86J2I",
+  "timestamp": "2023-08-27T00:01:01.642791+00:00",
+  "repo": "ounsworth/cms-dhkem",
+  "labels": [
+    {
+      "name": "bug",
+      "description": "Something isn't working",
+      "color": "d73a4a"
+    },
+    {
+      "name": "documentation",
+      "description": "Improvements or additions to documentation",
+      "color": "0075ca"
+    },
+    {
+      "name": "duplicate",
+      "description": "This issue or pull request already exists",
+      "color": "cfd3d7"
+    },
+    {
+      "name": "enhancement",
+      "description": "New feature or request",
+      "color": "a2eeef"
+    },
+    {
+      "name": "good first issue",
+      "description": "Good for newcomers",
+      "color": "7057ff"
+    },
+    {
+      "name": "help wanted",
+      "description": "Extra attention is needed",
+      "color": "008672"
+    },
+    {
+      "name": "invalid",
+      "description": "This doesn't seem right",
+      "color": "e4e669"
+    },
+    {
+      "name": "question",
+      "description": "Further information is requested",
+      "color": "d876e3"
+    },
+    {
+      "name": "wontfix",
+      "description": "This will not be worked on",
+      "color": "ffffff"
+    }
+  ],
+  "issues": [
+    {
+      "number": 1,
+      "id": "I_kwDOJyaJU85pZO0X",
+      "title": "Remove the copied text from 9180",
+      "url": "https://github.com/ounsworth/cms-dhkem/issues/1",
+      "state": "CLOSED",
+      "author": "ounsworth",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "Just point to 9180 section 4.1 instead of copying it.",
+      "createdAt": "2023-06-21T18:56:31Z",
+      "updatedAt": "2023-08-25T04:26:59Z",
+      "closedAt": "2023-08-25T04:26:59Z",
+      "comments": []
+    },
+    {
+      "number": 2,
+      "id": "I_kwDOJyaJU85pZP8z",
+      "title": "Editing pass for typos",
+      "url": "https://github.com/ounsworth/cms-dhkem/issues/2",
+      "state": "CLOSED",
+      "author": "ounsworth",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2023-06-21T18:58:39Z",
+      "updatedAt": "2023-08-25T03:59:44Z",
+      "closedAt": "2023-08-25T03:59:43Z",
+      "comments": []
+    }
+  ],
+  "pulls": [
+    {
+      "number": 3,
+      "id": "PR_kwDOJyaJU85YwI2q",
+      "title": "Updated IANA Considerations",
+      "url": "https://github.com/ounsworth/cms-dhkem/pull/3",
+      "state": "MERGED",
+      "author": "ounsworth",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2023-08-25T04:15:57Z",
+      "updatedAt": "2023-08-25T04:26:33Z",
+      "baseRepository": "ounsworth/cms-dhkem",
+      "baseRefName": "main",
+      "baseRefOid": "843b93047ca1279bf24e6ac5f512b4edaf9fb654",
+      "headRepository": "ounsworth/cms-dhkem",
+      "headRefName": "mike_iana_considerations",
+      "headRefOid": "f8710f1c2783b195c13bcad950614ceb983f6c6a",
+      "closedAt": "2023-08-25T04:26:29Z",
+      "mergedAt": "2023-08-25T04:26:29Z",
+      "mergedBy": "ounsworth",
+      "mergeCommit": {
+        "oid": "97e68a2de4191f2df6346bb5d8948a874ee77a8b"
+      },
+      "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 4,
+      "id": "PR_kwDOJyaJU85YwKvt",
+      "title": "Mike remove9180 content.",
+      "url": "https://github.com/ounsworth/cms-dhkem/pull/4",
+      "state": "MERGED",
+      "author": "ounsworth",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2023-08-25T04:25:53Z",
+      "updatedAt": "2023-08-25T04:27:00Z",
+      "baseRepository": "ounsworth/cms-dhkem",
+      "baseRefName": "main",
+      "baseRefOid": "843b93047ca1279bf24e6ac5f512b4edaf9fb654",
+      "headRepository": "ounsworth/cms-dhkem",
+      "headRefName": "mike_remove9180_1",
+      "headRefOid": "ad51ce4986dd0c637108048d14d3a72213b5a64e",
+      "closedAt": "2023-08-25T04:26:57Z",
+      "mergedAt": "2023-08-25T04:26:57Z",
+      "mergedBy": "ounsworth",
+      "mergeCommit": {
+        "oid": "791f5a16710994f63ff05f127b72de47e0f90201"
+      },
+      "comments": [],
+      "reviews": []
+    }
+  ]
+}
