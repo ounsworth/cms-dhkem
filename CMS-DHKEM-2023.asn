@@ -1,0 +1,59 @@
+CMS-DHKEM-2023
+    { iso(1) member-body(2) us(840) rsadsi(113549)
+      pkcs(1) pkcs-9(9) smime(16) modules(0)
+      id-mod-cms-dhkem-2023(TBDMOD) }
+
+  DEFINITIONS IMPLICIT TAGS ::=
+  BEGIN
+  -- EXPORTS ALL;
+
+  IMPORTS
+
+  AlgorithmIdentifier{}, KEY-AGREE, KEY-DERIVATION
+    FROM AlgorithmInformation-2009
+      { iso(1) identified-organization(3) dod(6) internet(1)
+        security(5) mechanisms(5) pkix(7) id-mod(0)
+        id-mod-algorithmInformation-02(58) }
+
+   KEM-ALGORITHM
+     FROM KEMAlgorithmInformation-2023 -- [I-D.ietf-lamps-cms-kemri]
+       { iso(1) identified-organization(3) dod(6) internet(1)
+         security(5) mechanisms(5) pkix(7) id-mod(0)
+         id-mod-kemAlgorithmInformation-2023(99) }
+
+   pk-dh, pk-ec
+     FROM PKIXAlgs-2009
+       { iso(1) identified-organization(3) dod(6) internet(1)
+         security(5) mechanisms(5) pkix(7) id-mod(0)
+         id-mod-pkix1-algorithms2008-02(56) }
+
+  pk-X25519, pk-X448
+    FROM Safecurves-pkix-18
+      { iso(1) identified-organization(3) dod(6) internet(1)
+        security(5) mechanisms(5) pkix(7) id-mod(0)
+        id-mod-safecurves-pkix(93) } 
+  ;
+
+
+  id-alg-dhkem OBJECT IDENTIFIER ::= { iso(1) member-body(2) us(840)
+      rsadsi(113549) pkcs(1) pkcs-9(9) smime(16) alg(3) TBDALG }
+
+  kema-dhkem KEM-ALGORITHM ::= {
+      IDENTIFIER id-alg-dhkem
+      PARAMS TYPE DHKemParameters
+      PUBLIC-KEYS { pk-dh | pk-ec | pk-X25519 | pk-X448 }
+      UKM ARE optional
+      SMIME-CAPS { TYPE DHKemParameters IDENTIFIED BY id-kem-dhkem } }
+
+  DHKemParameters ::= SEQUENCE {
+      dh         KeyAgreeAlgorithmIdentifier,
+      kdf        KeyDerivationFunction,
+      keyLength  KeyLength }
+
+  KeyAgreeAlgorithmIdentifier ::= AlgorithmIdentifier{ KEY-AGREE, {...} }
+
+  KeyDerivationFunction ::= AlgorithmIdentifier { KEY-DERIVATION, {...} }
+
+  KeyLength ::= INTEGER (1..MAX)
+
+END
