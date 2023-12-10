@@ -19,7 +19,7 @@ CMS-DHKEM-2023
      FROM KEMAlgorithmInformation-2023 -- [I-D.ietf-lamps-cms-kemri]
        { iso(1) identified-organization(3) dod(6) internet(1)
          security(5) mechanisms(5) pkix(7) id-mod(0)
-         id-mod-kemAlgorithmInformation-2023(99) }
+         id-mod-kemAlgorithmInformation-2023(TBD) }
 
    pk-dh, pk-ec
      FROM PKIXAlgs-2009
@@ -40,7 +40,7 @@ CMS-DHKEM-2023
 
   kema-dhkem KEM-ALGORITHM ::= {
       IDENTIFIER id-alg-dhkem
-      PARAMS TYPE DHKemParameters
+      PARAMS TYPE DHKemParameters ARE optional
       PUBLIC-KEYS { pk-dh | pk-ec | pk-X25519 | pk-X448 }
       UKM ARE optional
       SMIME-CAPS { TYPE DHKemParameters IDENTIFIED BY id-kem-dhkem } }

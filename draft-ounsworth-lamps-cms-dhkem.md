@@ -57,6 +57,7 @@ normative:
   RFC5280:
   RFC5652:
   I-D.ietf-lamps-cms-kemri:
+  I-D.ietf-lamps-pq-composite-kem:
 
 informative:
   RFC5990:
@@ -68,8 +69,8 @@ informative:
 The DHKEM Algorithm is a one-pass (store-and-forward)
 mechanism for establishing keying data to a recipient using the
 recipient's Diffie-Hellman or elliptic curve Diffie-Hellman public key.
-This document defines a mechanism
-to wrap Ephemeral-Static (E-S) Diffie-Hellman (DH) and Elliptic Curve
+This document uses a straightforward application of {{RFC9180}} to define
+a mechanism to wrap Ephemeral-Static (E-S) Diffie-Hellman (DH) and Elliptic Curve
 Diffie-Hellman (ECDH) such that it can be used in KEM interfaces
 within the Cryptographic Message Syntax (CMS).
 This is a sister document to RSA-KEM {{RFC5990}} and simplifies future
@@ -85,39 +86,40 @@ The Cryptographic Message Syntax (CMS) enveloped-data content type
 {{RFC5652}} and the CMS authenticated-enveloped-data content type
 {{RFC5083}} support both key transport and key agreement algorithms to
 establish the key used to encrypt the content.  In recent years,
-cryptographers have be specifying Key Encapsulation Mechanism (KEM)
-algorithms, including quantum-secure KEM algorithms.  This document
-defines conventions for wrapping Diffie-Hellman Ephemeral-Static (E-S)
-Diffie-Hellman (DH) and Elliptic Curve Diffie-Hellman (ECDH) to fit the
-KEM interface for the CMS enveloped-data content type and the CMS
+cryptographers have be specifying asymmetric key establishment algorithms,
+including Post-Quantum algorithms as Key Encapsulation Mechanism (KEMs).
+This document defines conventions for wrapping Ephemeral-Static (E-S)
+Diffie-Hellman (DH) and Elliptic Curve Diffie-Hellman (ECDH) key agreements
+to fit the KEM interface for the CMS enveloped-data content type and the CMS
 authenticated-enveloped-data content type as defined in
 {{I-D.ietf-lamps-cms-kemri}}.
 This is a parallel mechanism to {{RFC5990}} which does the same for RSA.
 The benefit is to allow forward-compatibility of older DH-based ciphers
-into new mechanisms that only support KEMs.
+into new mechanisms that only support KEMs including the PQ/T Hybrid
+mechanisms specified in {{I-D.ietf-lamps-pq-composite-kem}}.
 
 A KEM algorithm is a one-pass (store-and-forward) mechanism for
-transporting random keying material to a recipient using the recipient's
-public key.  The recipient's private key is needed to recover the random
+encapsulating keying material for a recipient using the recipient's
+public key.  The recipient's private key is needed to recover the
 keying material, which is then treated as a pairwise shared secret
-between the originator and recipient.  A KEM algorithm provides three
+between the sender and recipient.  A KEM algorithm provides three
 functions:
 
 * KeyGen() -> (pk, sk):
 
-> Generate the public key (pk) and a private key (sk).
+> Generate a public key (pk) and a corresponding private key (sk). This function is identical to the DH.KeyGen() of the underlying Diffie-Hellman primitive.
 
 * Encapsulate(pk) -> (ct, ss):
 
 > Given the recipient's public key (pk), produce a ciphertext (ct) to be
-passed to the recipient and shared secret (ss) for the originator.
+passed to the recipient and shared secret (ss) for the sender.
 
 * Decapsulate(sk, ct) -> ss:
 
-> Given the private key (sk) and the ciphertext (ct), produce the
+> Given the private key (sk) and the ciphertext (ct), recover the
 shared secret (ss) for the recipient.
 
-To support a particular KEM algorithm, the CMS originator MUST implement
+To support a particular KEM algorithm, the CMS sender MUST implement KeyGen() and
 Encapsulate().
 
 To support a particular KEM algorithm, the CMS recipient MUST implement
@@ -161,7 +163,7 @@ This is a straightforward application of the DHKEM construction from
 CMS encrypt operations performed by the sender are to use `Encap(pkR)`.
 CMS decrypt operations performed by the received are to use `Decap(enc, skR)`.
 
-The authenticated modes, `AuthEncap(pkR, skS)` and `AuthDecap(enc, skR, pkS)`
+The authenticated modes defined in {{RFC9180}}, `AuthEncap(pkR, skS)` and `AuthDecap(enc, skR, pkS)`
 do not apply to CMS.
 
 # ASN.1 Module
@@ -169,72 +171,23 @@ do not apply to CMS.
 In order to carry a DHKEM inside a CMS KEMRecipientInfo {{I-D.ietf-lamps-cms-kemri}},
 we define `id-kem-dhkem`, `kema-dhkem`, and `DHKemParameters`.
 
-~~~
-CMS-DHKEM-2023
-    { iso(1) member-body(2) us(840) rsadsi(113549)
-      pkcs(1) pkcs-9(9) smime(16) modules(0)
-      id-mod-cms-dhkem-2023(TBDMOD) }
+~~~ ASN.1
 
-  DEFINITIONS IMPLICIT TAGS ::=
-  BEGIN
-  -- EXPORTS ALL;
+<CODE STARTS>
 
-  IMPORTS
+{::include CMS-DHKEM-2023.asn}
 
-  AlgorithmIdentifier{}, KEY-AGREE, KEY-DERIVATION
-    FROM AlgorithmInformation-2009
-      { iso(1) identified-organization(3) dod(6) internet(1)
-        security(5) mechanisms(5) pkix(7) id-mod(0)
-        id-mod-algorithmInformation-02(58) }
-
-   KEM-ALGORITHM
-     FROM KEMAlgorithmInformation-2023 -- [I-D.ietf-lamps-cms-kemri]
-       { iso(1) identified-organization(3) dod(6) internet(1)
-         security(5) mechanisms(5) pkix(7) id-mod(0)
-         id-mod-kemAlgorithmInformation-2023(99) }
-
-   pk-dh, pk-ec
-     FROM PKIXAlgs-2009
-       { iso(1) identified-organization(3) dod(6) internet(1)
-         security(5) mechanisms(5) pkix(7) id-mod(0)
-         id-mod-pkix1-algorithms2008-02(56) }
-
-  pk-X25519, pk-X448
-    FROM Safecurves-pkix-18
-      { iso(1) identified-organization(3) dod(6) internet(1)
-        security(5) mechanisms(5) pkix(7) id-mod(0)
-        id-mod-safecurves-pkix(93) } ;
-
-
-  id-alg-dhkem OBJECT IDENTIFIER ::= { iso(1) member-body(2) us(840)
-      rsadsi(113549) pkcs(1) pkcs-9(9) smime(16) alg(3) TBDALG }
-
-  kema-dhkem KEM-ALGORITHM ::= {
-      IDENTIFIER id-alg-dhkem
-      PARAMS TYPE DHKemParameters
-      PUBLIC-KEYS { pk-dh | pk-ec | pk-X25519 | pk-X448 }
-      UKM ARE optional
-      SMIME-CAPS { TYPE DHKemParameters IDENTIFIED BY id-kem-dhkem } }
-
-  DHKemParameters ::= SEQUENCE {
-      dh         KeyAgreeAlgorithmIdentifier,
-      kdf        KeyDerivationFunction,
-      keyLength  KeyLength }
-
-  KeyAgreeAlgorithmIdentifier ::= AlgorithmIdentifier{ KEY-AGREE, {...} }
-
-  KeyDerivationFunction ::= AlgorithmIdentifier { KEY-DERIVATION, {...} }
-
-  KeyLength ::= INTEGER (1..MAX)
-
-END
+<CODE ENDS>
 
 ~~~
 
 EDNOTE: The other way to define this would be to call out a toplevel DHKEM for each one: `id-kema-dhkem-dh` `id-kema-dhkem-ecdh`, `id-kema-dhkem-x25519`, `id-kema-dhkem-x448`.
+
 EDNOTE: This approach adds a layer of wrapping for the benefit of agility and future-proofing. I would be happy to write them each out if that's considered better.
 
 # Security Considerations
+
+This document provides an IND-CCA2 secure DHKEM construction.
 
 This document does not add any security considerations above
 those already present for the Ephemeral-Static mode of the underlying (EC)DH primitive
