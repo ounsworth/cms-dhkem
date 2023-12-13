@@ -137,39 +137,117 @@ recipient's static public key.
 
 {::boilerplate bcp14-tagged}
 
-# Cryptographic dependencies
-
-## Key Derivation Function
-
-A key derivation function (KDF):
-
-* `Extract(salt, ikm)`: Extract a pseudorandom key of fixed length `keyLength` bytes from input keying material `ikm` and an optional byte string `salt`.
-* `Expand(prk, info, L)`: Expand a pseudorandom key `prk` using optional string info into `L` bytes of output keying material.
-* `keyLength`: The output size of the `Extract()` function in bytes.
-
-## (Elliptic Curve) Diffie Hellman
-
-An elliptic curve or finite field Diffie-Hellman group providing the following operations:
-
-* `GenerateKeyPair()`: create a new DH key.
-* `DH(skX, pkY)`: Perform a non-interactive Diffie-Hellman exchange using the private key `skX` and public key `pkY` to produce a Diffie-Hellman shared secret of length `Ndh`. This function can raise a ValidationError as described in {{RFC9180}} Section 7.1.4.
-
-
-# DH-Based KEM (DHKEM)
+# Use of DHKEM  in CMS
 
 This is a straightforward application of the DHKEM construction from
-{{RFC9180}} section 4.1 which is to be used unmodified.
+{{RFC9180}} section 4.1 which is to be used unmodified, and is copied below in {{appdx-dhkem}} for convenience.
 
 CMS encrypt operations performed by the sender are to use `Encap(pkR)`.
 CMS decrypt operations performed by the received are to use `Decap(enc, skR)`.
 
 The authenticated modes defined in {{RFC9180}}, `AuthEncap(pkR, skS)` and `AuthDecap(enc, skR, pkS)`
-do not apply to CMS.
+do not apply to CMS because CMS uses DH in only the ephemeral-static modes and provides sender authentication through separate digital signatures.
+
+
+## RecipientInfo Conventions
+
+TODO:
+
+## Certificate Conventions
+
+TODO:
+
+## SMIMECapabilities Attribute Conventions
+
+Section 2.5.2 of {{!RFC8551}} defines the SMIMECapabilities signed
+attribute (defined as a SEQUENCE of SMIMECapability SEQUENCEs) to
+announce a partial list of algorithms that an S/MIME implementation
+can support.  When constructing a CMS signed-data content type
+{{!RFC5652}}, a compliant implementation MAY include the
+SMIMECapabilities signed attribute announcing that it supports the
+DHKEM Algorithm.
+
+The SMIMECapability SEQUENCE representing the RSA-KEM Algorithm MUST
+include the id-rsa-kem-spki object identifier in the capabilityID
+field; see Appendix B for the object identifier value, and see
+Appendix C for examples.  When the id-rsa-kem-spki object identifier
+appears in the capabilityID field and the parameters are present,
+then the parameters field MUST use the GenericHybridParameters type, which is defined in {{I-D.ietf-lamps-cms-kemri}}.
+
+~~~
+  GenericHybridParameters ::= SEQUENCE {
+    kem  KeyEncapsulationMechanism,
+    dem  DataEncapsulationMechanism }
+~~~
+
+The definition of KEMAlgorithms from {{I-D.ietf-lamps-cms-kemri}}
+
+~~~
+ KEMAlgorithms KEM-ALGORITHM ::= { kema-kem-rsa | kema-rsa-kem, ... }
+~~~
+
+is extended to add `kema-dhkem`.
+
+TODO / EDNOTE: I actually don't know how to extend something in ASN.1.
+
+The fields of the GenericHybridParameters type have the following
+meanings:
+
+  kem is an AlgorithmIdentifer; the algorithm field MUST be set to
+  id-alg-dhkem; the parameters field MUST be DhKemParameters, which
+  is a SEQUENCE of an AlgorithmIdentifier that identifies the underlying
+  Diffie-Hellman algorithm, an AlgorithmIdentifier that identifies the
+  supported key-derivation function and a positive INTEGER that
+  identifies the length of the key-encryption key in octets.  If the
+  GenericHybridParameters are present, then the provided keyDerivationFunction
+  value MUST be used as the key-derivation function in the kdf field of
+  KEMRecipientInfo, and the provided key length MUST be used in the
+  kekLength of KEMRecipientInfo.
+
+  dem is an AlgorithmIdentifier; the algorithm field MUST be
+  present, and it identifies the key-encryption algorithm;
+  parameters are optional.  If the GenericHybridParameters are
+  present, then the provided dem value MUST be used in the wrap
+  field of KEMRecipientInfo.
+
+
+~~~
+DhKemParameters ::= SEQUENCE {
+  dhAlg                  DhAlgorithm,
+  keyDerivationFunction  KeyDerivationFunction,
+  keyLength              KeyLength }
+
+DhAlgorithm ::=
+  AlgorithmIdentifier { KEY-AGREE, {DhAlgorithms} }
+
+DhAlgorithms KEY-AGREE ::= { kaa-X25519, kaa-X448, ... }
+
+EDNOTE: I kinda just want to borrow / extend this from RFC8418:
+
+   KeyAgreementAlgs KEY-AGREE ::= { ...,
+     kaa-dhSinglePass-stdDH-sha256kdf-scheme   |
+     kaa-dhSinglePass-stdDH-sha384kdf-scheme   |
+     kaa-dhSinglePass-stdDH-sha512kdf-scheme   |
+     kaa-dhSinglePass-stdDH-hkdf-sha256-scheme |
+     kaa-dhSinglePass-stdDH-hkdf-sha384-scheme |
+     kaa-dhSinglePass-stdDH-hkdf-sha512-scheme }
+~~~
+
+TODO: imports:
+TODO: KEY-AGREE FROM AlgorithmInformation-2009
+       {iso(1) identified-organization(3) dod(6) internet(1) security(5)
+       mechanisms(5) pkix(7) id-mod(0)
+       id-mod-algorithmInformation-02(58)}
+
+TODO: kaa-X25519, kaa-x448 from 8410
+
 
 # ASN.1 Module
 
 In order to carry a DHKEM inside a CMS KEMRecipientInfo {{I-D.ietf-lamps-cms-kemri}},
 we define `id-kem-dhkem`, `kema-dhkem`, and `DHKemParameters`.
+
+TODO: sync this up with the extra stuff added in the body.
 
 ~~~ ASN.1
 
@@ -222,6 +300,81 @@ S/MIME Algorithms" to identify the new algorithm defined within.
 
 
 --- back
+
+
+# DH-Based KEM (DHKEM) Algorithm {#appdx-dhkem}
+
+# Cryptographic dependencies
+
+## Key Derivation Function
+
+A key derivation function (KDF):
+
+* `Extract(salt, ikm) -> prk`: Extract a pseudorandom key of fixed length `keyLength` bytes from input keying material `ikm` and an optional byte string `salt`.
+* `Expand(prk, info, L) -> ss`: Expand a pseudorandom key `prk` using optional string info into `L` bytes of output keying material.
+* `keyLength`: The output size of the `Extract()` function in bytes.
+
+In the pseudo-code below, these are combined into a single function:
+
+* `ExtractAndExpand(ikm, info) -> ss`.
+
+## (Elliptic Curve) Diffie Hellman
+
+An elliptic curve or finite field Diffie-Hellman group providing the following operations:
+
+* `GenerateKeyPair() -> (pk, sk)`: create a new DH key.
+* `DH(skX, pkY) -> ss`: Perform a non-interactive Diffie-Hellman exchange using the private key `skX` and public key `pkY` to produce a Diffie-Hellman shared secret of length `Ndh`. This function can raise a ValidationError as described in {{RFC9180}} Section 7.1.4.
+
+These definitions are taken from {{RFC9180}} and reproduced here for convenience.
+
+## DHKEM
+
+KDF functions:
+
+~~~
+def LabeledExtract(salt, label, ikm):
+  labeled_ikm = concat("HPKE-v1", suite_id, label, ikm)
+  return Extract(salt, labeled_ikm)
+
+def LabeledExpand(prk, label, info, L):
+  labeled_info = concat(I2OSP(L, 2), "HPKE-v1", suite_id,
+                        label, info)
+  return Expand(prk, labeled_info, L)
+
+def ExtractAndExpand(dh, kem_context):
+  eae_prk = LabeledExtract("", "eae_prk", dh)
+  shared_secret = LabeledExpand(eae_prk, "shared_secret",
+                                kem_context, Nsecret)
+  return shared_secret
+~~~
+{: #code-9180kdfs title="KDF functions from RFC 9180"}
+
+DHKEM functions:
+
+~~~
+def Encap(pkR):
+  skE, pkE = GenerateKeyPair()
+  dh = DH(skE, pkR)
+  enc = SerializePublicKey(pkE)
+
+  pkRm = SerializePublicKey(pkR)
+  kem_context = concat(enc, pkRm)
+
+  shared_secret = ExtractAndExpand(dh, kem_context)
+  return shared_secret, enc
+
+def Decap(enc, skR):
+  pkE = DeserializePublicKey(enc)
+  dh = DH(skR, pkE)
+
+  pkRm = SerializePublicKey(pk(skR))
+  kem_context = concat(enc, pkRm)
+
+  shared_secret = ExtractAndExpand(dh, kem_context)
+  return shared_secret
+~~~
+{: #code-9180dhkem title="DHKEM functions from RFC 9180"}
+
 
 # Acknowledgments
 {:numbered="false"}
