@@ -26,16 +26,16 @@ protocol level.
 <!-- Generator version information:
   xml2rfc 3.18.2
     Python 3.11.6
-    ConfigArgParse 1.5.3
+    ConfigArgParse 1.7
     google-i18n-address 3.1.0
     intervaltree 3.1.0
     Jinja2 3.1.2
     lxml 4.9.3
     platformdirs 4.1.0
     pycountry 22.3.5
-    PyYAML 6.0
+    PyYAML 6.0.1
     requests 2.31.0
-    setuptools 67.7.2
+    setuptools 68.2.2
     six 1.16.0
     wcwidth 0.2.12
 -->
@@ -1040,7 +1040,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
 </tr></thead>
 <tfoot><tr>
 <td class="left">Ounsworth, et al.</td>
-<td class="center">Expires 12 June 2024</td>
+<td class="center">Expires 15 June 2024</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1053,12 +1053,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <dd class="internet-draft">draft-ounsworth-lamps-cms-dhkem-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2023-12-10" class="published">10 December 2023</time>
+<time datetime="2023-12-13" class="published">13 December 2023</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2024-06-12">12 June 2024</time></dd>
+<dd class="expires"><time datetime="2024-06-15">15 June 2024</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1125,7 +1125,7 @@ protocol level.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 12 June 2024.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 15 June 2024.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1161,57 +1161,74 @@ protocol level.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
             <p id="section-toc.1-1.2.1" class="keepWithNext"><a href="#section-2" class="auto internal xref">2</a>.  <a href="#name-conventions-and-definitions" class="internal xref">Conventions and Definitions</a></p>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3">
-            <p id="section-toc.1-1.3.1"><a href="#section-3" class="auto internal xref">3</a>.  <a href="#name-cryptographic-dependencies" class="internal xref">Cryptographic dependencies</a></p>
+            <p id="section-toc.1-1.3.1"><a href="#section-3" class="auto internal xref">3</a>.  <a href="#name-use-of-dhkem-in-cms" class="internal xref">Use of DHKEM  in CMS</a></p>
 <ul class="compact toc ulBare ulEmpty">
 <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.1">
-                <p id="section-toc.1-1.3.2.1.1" class="keepWithNext"><a href="#section-3.1" class="auto internal xref">3.1</a>.  <a href="#name-key-derivation-function" class="internal xref">Key Derivation Function</a></p>
+                <p id="section-toc.1-1.3.2.1.1" class="keepWithNext"><a href="#section-3.1" class="auto internal xref">3.1</a>.  <a href="#name-recipientinfo-conventions" class="internal xref">RecipientInfo Conventions</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.2">
-                <p id="section-toc.1-1.3.2.2.1"><a href="#section-3.2" class="auto internal xref">3.2</a>.  <a href="#name-elliptic-curve-diffie-hellm" class="internal xref">(Elliptic Curve) Diffie Hellman</a></p>
+                <p id="section-toc.1-1.3.2.2.1"><a href="#section-3.2" class="auto internal xref">3.2</a>.  <a href="#name-certificate-conventions" class="internal xref">Certificate Conventions</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.3">
+                <p id="section-toc.1-1.3.2.3.1"><a href="#section-3.3" class="auto internal xref">3.3</a>.  <a href="#name-smimecapabilities-attribute" class="internal xref">SMIMECapabilities Attribute Conventions</a></p>
 </li>
             </ul>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4">
-            <p id="section-toc.1-1.4.1"><a href="#section-4" class="auto internal xref">4</a>.  <a href="#name-dh-based-kem-dhkem" class="internal xref">DH-Based KEM (DHKEM)</a></p>
+            <p id="section-toc.1-1.4.1"><a href="#section-4" class="auto internal xref">4</a>.  <a href="#name-asn1-module" class="internal xref">ASN.1 Module</a></p>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5">
-            <p id="section-toc.1-1.5.1"><a href="#section-5" class="auto internal xref">5</a>.  <a href="#name-asn1-module" class="internal xref">ASN.1 Module</a></p>
+            <p id="section-toc.1-1.5.1"><a href="#section-5" class="auto internal xref">5</a>.  <a href="#name-security-considerations" class="internal xref">Security Considerations</a></p>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6">
-            <p id="section-toc.1-1.6.1"><a href="#section-6" class="auto internal xref">6</a>.  <a href="#name-security-considerations" class="internal xref">Security Considerations</a></p>
-</li>
-          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7">
-            <p id="section-toc.1-1.7.1"><a href="#section-7" class="auto internal xref">7</a>.  <a href="#name-iana-considerations" class="internal xref">IANA Considerations</a></p>
+            <p id="section-toc.1-1.6.1"><a href="#section-6" class="auto internal xref">6</a>.  <a href="#name-iana-considerations" class="internal xref">IANA Considerations</a></p>
 <ul class="compact toc ulBare ulEmpty">
-<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7.2.1">
-                <p id="section-toc.1-1.7.2.1.1"><a href="#section-7.1" class="auto internal xref">7.1</a>.  <a href="#name-object-identifier-allocatio" class="internal xref">Object Identifier Allocations</a></p>
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6.2.1">
+                <p id="section-toc.1-1.6.2.1.1"><a href="#section-6.1" class="auto internal xref">6.1</a>.  <a href="#name-object-identifier-allocatio" class="internal xref">Object Identifier Allocations</a></p>
 <ul class="compact toc ulBare ulEmpty">
-<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7.2.1.2.1">
-                    <p id="section-toc.1-1.7.2.1.2.1.1"><a href="#section-7.1.1" class="auto internal xref">7.1.1</a>.  <a href="#name-module-registration-smi-sec" class="internal xref">Module Registration - SMI Security for S/MIME Module Identifer</a></p>
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6.2.1.2.1">
+                    <p id="section-toc.1-1.6.2.1.2.1.1"><a href="#section-6.1.1" class="auto internal xref">6.1.1</a>.  <a href="#name-module-registration-smi-sec" class="internal xref">Module Registration - SMI Security for S/MIME Module Identifer</a></p>
 </li>
-                  <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7.2.1.2.2">
-                    <p id="section-toc.1-1.7.2.1.2.2.1"><a href="#section-7.1.2" class="auto internal xref">7.1.2</a>.  <a href="#name-object-identifier-registrat" class="internal xref">Object Identifier Registrations - SMI Security for S/MIME Attributes</a></p>
+                  <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6.2.1.2.2">
+                    <p id="section-toc.1-1.6.2.1.2.2.1"><a href="#section-6.1.2" class="auto internal xref">6.1.2</a>.  <a href="#name-object-identifier-registrat" class="internal xref">Object Identifier Registrations - SMI Security for S/MIME Attributes</a></p>
 </li>
                 </ul>
 </li>
             </ul>
 </li>
-          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8">
-            <p id="section-toc.1-1.8.1"><a href="#section-8" class="auto internal xref">8</a>.  <a href="#name-references" class="internal xref">References</a></p>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7">
+            <p id="section-toc.1-1.7.1"><a href="#section-7" class="auto internal xref">7</a>.  <a href="#name-references" class="internal xref">References</a></p>
 <ul class="compact toc ulBare ulEmpty">
-<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8.2.1">
-                <p id="section-toc.1-1.8.2.1.1"><a href="#section-8.1" class="auto internal xref">8.1</a>.  <a href="#name-normative-references" class="internal xref">Normative References</a></p>
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7.2.1">
+                <p id="section-toc.1-1.7.2.1.1"><a href="#section-7.1" class="auto internal xref">7.1</a>.  <a href="#name-normative-references" class="internal xref">Normative References</a></p>
 </li>
-              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8.2.2">
-                <p id="section-toc.1-1.8.2.2.1"><a href="#section-8.2" class="auto internal xref">8.2</a>.  <a href="#name-informative-references" class="internal xref">Informative References</a></p>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7.2.2">
+                <p id="section-toc.1-1.7.2.2.1"><a href="#section-7.2" class="auto internal xref">7.2</a>.  <a href="#name-informative-references" class="internal xref">Informative References</a></p>
 </li>
             </ul>
 </li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8">
+            <p id="section-toc.1-1.8.1"><a href="#appendix-A" class="auto internal xref">Appendix A</a>.  <a href="#name-dh-based-kem-dhkem-algorith" class="internal xref">DH-Based KEM (DHKEM) Algorithm</a></p>
+</li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9">
-            <p id="section-toc.1-1.9.1"><a href="#appendix-A" class="auto internal xref"></a><a href="#name-acknowledgments" class="internal xref">Acknowledgments</a></p>
+            <p id="section-toc.1-1.9.1"><a href="#appendix-B" class="auto internal xref">Appendix B</a>.  <a href="#name-cryptographic-dependencies" class="internal xref">Cryptographic dependencies</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9.2.1">
+                <p id="section-toc.1-1.9.2.1.1"><a href="#appendix-B.1" class="auto internal xref">B.1</a>.  <a href="#name-key-derivation-function" class="internal xref">Key Derivation Function</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9.2.2">
+                <p id="section-toc.1-1.9.2.2.1"><a href="#appendix-B.2" class="auto internal xref">B.2</a>.  <a href="#name-elliptic-curve-diffie-hellm" class="internal xref">(Elliptic Curve) Diffie Hellman</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9.2.3">
+                <p id="section-toc.1-1.9.2.3.1"><a href="#appendix-B.3" class="auto internal xref">B.3</a>.  <a href="#name-dhkem" class="internal xref">DHKEM</a></p>
+</li>
+            </ul>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.10">
-            <p id="section-toc.1-1.10.1"><a href="#appendix-B" class="auto internal xref"></a><a href="#name-authors-addresses" class="internal xref">Authors' Addresses</a></p>
+            <p id="section-toc.1-1.10.1"><a href="#appendix-C" class="auto internal xref"></a><a href="#name-acknowledgments" class="internal xref">Acknowledgments</a></p>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.11">
+            <p id="section-toc.1-1.11.1"><a href="#appendix-D" class="auto internal xref"></a><a href="#name-authors-addresses" class="internal xref">Authors' Addresses</a></p>
 </li>
         </ul>
 </nav>
@@ -1297,69 +1314,125 @@ described in BCP 14 <span>[<a href="#RFC2119" class="cite xref">RFC2119</a>]</s
 appear in all capitals, as shown here.<a href="#section-2-1" class="pilcrow">¶</a></p>
 </section>
 </div>
-<div id="cryptographic-dependencies">
+<div id="use-of-dhkem-in-cms">
 <section id="section-3">
-      <h2 id="name-cryptographic-dependencies">
-<a href="#section-3" class="section-number selfRef">3. </a><a href="#name-cryptographic-dependencies" class="section-name selfRef">Cryptographic dependencies</a>
+      <h2 id="name-use-of-dhkem-in-cms">
+<a href="#section-3" class="section-number selfRef">3. </a><a href="#name-use-of-dhkem-in-cms" class="section-name selfRef">Use of DHKEM  in CMS</a>
       </h2>
-<div id="key-derivation-function">
+<p id="section-3-1">This is a straightforward application of the DHKEM construction from
+<span>[<a href="#RFC9180" class="cite xref">RFC9180</a>]</span> section 4.1 which is to be used unmodified, and is copied below in <a href="#appdx-dhkem" class="auto internal xref">Appendix A</a> for convenience.<a href="#section-3-1" class="pilcrow">¶</a></p>
+<p id="section-3-2">CMS encrypt operations performed by the sender are to use <code>Encap(pkR)</code>.
+CMS decrypt operations performed by the received are to use <code>Decap(enc, skR)</code>.<a href="#section-3-2" class="pilcrow">¶</a></p>
+<p id="section-3-3">The authenticated modes defined in <span>[<a href="#RFC9180" class="cite xref">RFC9180</a>]</span>, <code>AuthEncap(pkR, skS)</code> and <code>AuthDecap(enc, skR, pkS)</code>
+do not apply to CMS because CMS uses DH in only the ephemeral-static modes and provides sender authentication through separate digital signatures.<a href="#section-3-3" class="pilcrow">¶</a></p>
+<div id="recipientinfo-conventions">
 <section id="section-3.1">
-        <h3 id="name-key-derivation-function">
-<a href="#section-3.1" class="section-number selfRef">3.1. </a><a href="#name-key-derivation-function" class="section-name selfRef">Key Derivation Function</a>
+        <h3 id="name-recipientinfo-conventions">
+<a href="#section-3.1" class="section-number selfRef">3.1. </a><a href="#name-recipientinfo-conventions" class="section-name selfRef">RecipientInfo Conventions</a>
         </h3>
-<p id="section-3.1-1">A key derivation function (KDF):<a href="#section-3.1-1" class="pilcrow">¶</a></p>
-<ul class="normal">
-<li class="normal" id="section-3.1-2.1">
-            <p id="section-3.1-2.1.1"><code>Extract(salt, ikm)</code>: Extract a pseudorandom key of fixed length <code>keyLength</code> bytes from input keying material <code>ikm</code> and an optional byte string <code>salt</code>.<a href="#section-3.1-2.1.1" class="pilcrow">¶</a></p>
-</li>
-          <li class="normal" id="section-3.1-2.2">
-            <p id="section-3.1-2.2.1"><code>Expand(prk, info, L)</code>: Expand a pseudorandom key <code>prk</code> using optional string info into <code>L</code> bytes of output keying material.<a href="#section-3.1-2.2.1" class="pilcrow">¶</a></p>
-</li>
-          <li class="normal" id="section-3.1-2.3">
-            <p id="section-3.1-2.3.1"><code>keyLength</code>: The output size of the <code>Extract()</code> function in bytes.<a href="#section-3.1-2.3.1" class="pilcrow">¶</a></p>
-</li>
-        </ul>
+<p id="section-3.1-1">TODO:<a href="#section-3.1-1" class="pilcrow">¶</a></p>
 </section>
 </div>
-<div id="elliptic-curve-diffie-hellman">
+<div id="certificate-conventions">
 <section id="section-3.2">
-        <h3 id="name-elliptic-curve-diffie-hellm">
-<a href="#section-3.2" class="section-number selfRef">3.2. </a><a href="#name-elliptic-curve-diffie-hellm" class="section-name selfRef">(Elliptic Curve) Diffie Hellman</a>
+        <h3 id="name-certificate-conventions">
+<a href="#section-3.2" class="section-number selfRef">3.2. </a><a href="#name-certificate-conventions" class="section-name selfRef">Certificate Conventions</a>
         </h3>
-<p id="section-3.2-1">An elliptic curve or finite field Diffie-Hellman group providing the following operations:<a href="#section-3.2-1" class="pilcrow">¶</a></p>
-<ul class="normal">
-<li class="normal" id="section-3.2-2.1">
-            <p id="section-3.2-2.1.1"><code>GenerateKeyPair()</code>: create a new DH key.<a href="#section-3.2-2.1.1" class="pilcrow">¶</a></p>
-</li>
-          <li class="normal" id="section-3.2-2.2">
-            <p id="section-3.2-2.2.1"><code>DH(skX, pkY)</code>: Perform a non-interactive Diffie-Hellman exchange using the private key <code>skX</code> and public key <code>pkY</code> to produce a Diffie-Hellman shared secret of length <code>Ndh</code>. This function can raise a ValidationError as described in <span>[<a href="#RFC9180" class="cite xref">RFC9180</a>]</span> Section 7.1.4.<a href="#section-3.2-2.2.1" class="pilcrow">¶</a></p>
-</li>
-        </ul>
+<p id="section-3.2-1">TODO:<a href="#section-3.2-1" class="pilcrow">¶</a></p>
 </section>
 </div>
+<div id="smimecapabilities-attribute-conventions">
+<section id="section-3.3">
+        <h3 id="name-smimecapabilities-attribute">
+<a href="#section-3.3" class="section-number selfRef">3.3. </a><a href="#name-smimecapabilities-attribute" class="section-name selfRef">SMIMECapabilities Attribute Conventions</a>
+        </h3>
+<p id="section-3.3-1">Section 2.5.2 of <span>[<a href="#RFC8551" class="cite xref">RFC8551</a>]</span> defines the SMIMECapabilities signed
+attribute (defined as a SEQUENCE of SMIMECapability SEQUENCEs) to
+announce a partial list of algorithms that an S/MIME implementation
+can support.  When constructing a CMS signed-data content type
+<span>[<a href="#RFC5652" class="cite xref">RFC5652</a>]</span>, a compliant implementation <span class="bcp14">MAY</span> include the
+SMIMECapabilities signed attribute announcing that it supports the
+DHKEM Algorithm.<a href="#section-3.3-1" class="pilcrow">¶</a></p>
+<p id="section-3.3-2">The SMIMECapability SEQUENCE representing the RSA-KEM Algorithm <span class="bcp14">MUST</span>
+include the id-rsa-kem-spki object identifier in the capabilityID
+field; see Appendix B for the object identifier value, and see
+Appendix C for examples.  When the id-rsa-kem-spki object identifier
+appears in the capabilityID field and the parameters are present,
+then the parameters field <span class="bcp14">MUST</span> use the GenericHybridParameters type, which is defined in <span>[<a href="#I-D.ietf-lamps-cms-kemri" class="cite xref">I-D.ietf-lamps-cms-kemri</a>]</span>.<a href="#section-3.3-2" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-3.3-3">
+<pre>
+  GenericHybridParameters ::= SEQUENCE {
+    kem  KeyEncapsulationMechanism,
+    dem  DataEncapsulationMechanism }
+</pre><a href="#section-3.3-3" class="pilcrow">¶</a>
+</div>
+<p id="section-3.3-4">The definition of KEMAlgorithms from <span>[<a href="#I-D.ietf-lamps-cms-kemri" class="cite xref">I-D.ietf-lamps-cms-kemri</a>]</span><a href="#section-3.3-4" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-3.3-5">
+<pre>
+ KEMAlgorithms KEM-ALGORITHM ::= { kema-kem-rsa | kema-rsa-kem, ... }
+</pre><a href="#section-3.3-5" class="pilcrow">¶</a>
+</div>
+<p id="section-3.3-6">is extended to add <code>kema-dhkem</code>.<a href="#section-3.3-6" class="pilcrow">¶</a></p>
+<p id="section-3.3-7">TODO / EDNOTE: I actually don't know how to extend something in ASN.1.<a href="#section-3.3-7" class="pilcrow">¶</a></p>
+<p id="section-3.3-8">The fields of the GenericHybridParameters type have the following
+meanings:<a href="#section-3.3-8" class="pilcrow">¶</a></p>
+<p id="section-3.3-9">kem is an AlgorithmIdentifer; the algorithm field <span class="bcp14">MUST</span> be set to
+  id-alg-dhkem; the parameters field <span class="bcp14">MUST</span> be DhKemParameters, which
+  is a SEQUENCE of an AlgorithmIdentifier that identifies the underlying
+  Diffie-Hellman algorithm, an AlgorithmIdentifier that identifies the
+  supported key-derivation function and a positive INTEGER that
+  identifies the length of the key-encryption key in octets.  If the
+  GenericHybridParameters are present, then the provided keyDerivationFunction
+  value <span class="bcp14">MUST</span> be used as the key-derivation function in the kdf field of
+  KEMRecipientInfo, and the provided key length <span class="bcp14">MUST</span> be used in the
+  kekLength of KEMRecipientInfo.<a href="#section-3.3-9" class="pilcrow">¶</a></p>
+<p id="section-3.3-10">dem is an AlgorithmIdentifier; the algorithm field <span class="bcp14">MUST</span> be
+  present, and it identifies the key-encryption algorithm;
+  parameters are optional.  If the GenericHybridParameters are
+  present, then the provided dem value <span class="bcp14">MUST</span> be used in the wrap
+  field of KEMRecipientInfo.<a href="#section-3.3-10" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-3.3-11">
+<pre>
+DhKemParameters ::= SEQUENCE {
+  dhAlg                  DhAlgorithm,
+  keyDerivationFunction  KeyDerivationFunction,
+  keyLength              KeyLength }
+
+DhAlgorithm ::=
+  AlgorithmIdentifier { KEY-AGREE, {DhAlgorithms} }
+
+DhAlgorithms KEY-AGREE ::= { kaa-X25519, kaa-X448, ... }
+
+EDNOTE: I kinda just want to borrow / extend this from RFC8418:
+
+   KeyAgreementAlgs KEY-AGREE ::= { ...,
+     kaa-dhSinglePass-stdDH-sha256kdf-scheme   |
+     kaa-dhSinglePass-stdDH-sha384kdf-scheme   |
+     kaa-dhSinglePass-stdDH-sha512kdf-scheme   |
+     kaa-dhSinglePass-stdDH-hkdf-sha256-scheme |
+     kaa-dhSinglePass-stdDH-hkdf-sha384-scheme |
+     kaa-dhSinglePass-stdDH-hkdf-sha512-scheme }
+</pre><a href="#section-3.3-11" class="pilcrow">¶</a>
+</div>
+<p id="section-3.3-12">TODO: imports:
+TODO: KEY-AGREE FROM AlgorithmInformation-2009
+       {iso(1) identified-organization(3) dod(6) internet(1) security(5)
+       mechanisms(5) pkix(7) id-mod(0)
+       id-mod-algorithmInformation-02(58)}<a href="#section-3.3-12" class="pilcrow">¶</a></p>
+<p id="section-3.3-13">TODO: kaa-X25519, kaa-x448 from 8410<a href="#section-3.3-13" class="pilcrow">¶</a></p>
 </section>
 </div>
-<div id="dh-based-kem-dhkem">
-<section id="section-4">
-      <h2 id="name-dh-based-kem-dhkem">
-<a href="#section-4" class="section-number selfRef">4. </a><a href="#name-dh-based-kem-dhkem" class="section-name selfRef">DH-Based KEM (DHKEM)</a>
-      </h2>
-<p id="section-4-1">This is a straightforward application of the DHKEM construction from
-<span>[<a href="#RFC9180" class="cite xref">RFC9180</a>]</span> section 4.1 which is to be used unmodified.<a href="#section-4-1" class="pilcrow">¶</a></p>
-<p id="section-4-2">CMS encrypt operations performed by the sender are to use <code>Encap(pkR)</code>.
-CMS decrypt operations performed by the received are to use <code>Decap(enc, skR)</code>.<a href="#section-4-2" class="pilcrow">¶</a></p>
-<p id="section-4-3">The authenticated modes defined in <span>[<a href="#RFC9180" class="cite xref">RFC9180</a>]</span>, <code>AuthEncap(pkR, skS)</code> and <code>AuthDecap(enc, skR, pkS)</code>
-do not apply to CMS.<a href="#section-4-3" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="asn1-module">
-<section id="section-5">
+<section id="section-4">
       <h2 id="name-asn1-module">
-<a href="#section-5" class="section-number selfRef">5. </a><a href="#name-asn1-module" class="section-name selfRef">ASN.1 Module</a>
+<a href="#section-4" class="section-number selfRef">4. </a><a href="#name-asn1-module" class="section-name selfRef">ASN.1 Module</a>
       </h2>
-<p id="section-5-1">In order to carry a DHKEM inside a CMS KEMRecipientInfo <span>[<a href="#I-D.ietf-lamps-cms-kemri" class="cite xref">I-D.ietf-lamps-cms-kemri</a>]</span>,
-we define <code>id-kem-dhkem</code>, <code>kema-dhkem</code>, and <code>DHKemParameters</code>.<a href="#section-5-1" class="pilcrow">¶</a></p>
-<div class="breakable lang-ASN.1 sourcecode" id="section-5-2">
+<p id="section-4-1">In order to carry a DHKEM inside a CMS KEMRecipientInfo <span>[<a href="#I-D.ietf-lamps-cms-kemri" class="cite xref">I-D.ietf-lamps-cms-kemri</a>]</span>,
+we define <code>id-kem-dhkem</code>, <code>kema-dhkem</code>, and <code>DHKemParameters</code>.<a href="#section-4-1" class="pilcrow">¶</a></p>
+<p id="section-4-2">TODO: sync this up with the extra stuff added in the body.<a href="#section-4-2" class="pilcrow">¶</a></p>
+<div class="breakable lang-ASN.1 sourcecode" id="section-4-3">
 <pre>
 &lt;CODE STARTS&gt;
 
@@ -1425,73 +1498,73 @@ END
 
 &lt;CODE ENDS&gt;
 
-</pre><a href="#section-5-2" class="pilcrow">¶</a>
+</pre><a href="#section-4-3" class="pilcrow">¶</a>
 </div>
-<p id="section-5-3">EDNOTE: The other way to define this would be to call out a toplevel DHKEM for each one: <code>id-kema-dhkem-dh</code> <code>id-kema-dhkem-ecdh</code>, <code>id-kema-dhkem-x25519</code>, <code>id-kema-dhkem-x448</code>.<a href="#section-5-3" class="pilcrow">¶</a></p>
-<p id="section-5-4">EDNOTE: This approach adds a layer of wrapping for the benefit of agility and future-proofing. I would be happy to write them each out if that's considered better.<a href="#section-5-4" class="pilcrow">¶</a></p>
+<p id="section-4-4">EDNOTE: The other way to define this would be to call out a toplevel DHKEM for each one: <code>id-kema-dhkem-dh</code> <code>id-kema-dhkem-ecdh</code>, <code>id-kema-dhkem-x25519</code>, <code>id-kema-dhkem-x448</code>.<a href="#section-4-4" class="pilcrow">¶</a></p>
+<p id="section-4-5">EDNOTE: This approach adds a layer of wrapping for the benefit of agility and future-proofing. I would be happy to write them each out if that's considered better.<a href="#section-4-5" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="security-considerations">
-<section id="section-6">
+<section id="section-5">
       <h2 id="name-security-considerations">
-<a href="#section-6" class="section-number selfRef">6. </a><a href="#name-security-considerations" class="section-name selfRef">Security Considerations</a>
+<a href="#section-5" class="section-number selfRef">5. </a><a href="#name-security-considerations" class="section-name selfRef">Security Considerations</a>
       </h2>
-<p id="section-6-1">This document provides an IND-CCA2 secure DHKEM construction.<a href="#section-6-1" class="pilcrow">¶</a></p>
-<p id="section-6-2">This document does not add any security considerations above
+<p id="section-5-1">This document provides an IND-CCA2 secure DHKEM construction.<a href="#section-5-1" class="pilcrow">¶</a></p>
+<p id="section-5-2">This document does not add any security considerations above
 those already present for the Ephemeral-Static mode of the underlying (EC)DH primitive
-and in <span>[<a href="#RFC9180" class="cite xref">RFC9180</a>]</span>.<a href="#section-6-2" class="pilcrow">¶</a></p>
+and in <span>[<a href="#RFC9180" class="cite xref">RFC9180</a>]</span>.<a href="#section-5-2" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="iana-considerations">
-<section id="section-7">
+<section id="section-6">
       <h2 id="name-iana-considerations">
-<a href="#section-7" class="section-number selfRef">7. </a><a href="#name-iana-considerations" class="section-name selfRef">IANA Considerations</a>
+<a href="#section-6" class="section-number selfRef">6. </a><a href="#name-iana-considerations" class="section-name selfRef">IANA Considerations</a>
       </h2>
-<p id="section-7-1">This document registers the OID <code>id-alg-dhkem</code><a href="#section-7-1" class="pilcrow">¶</a></p>
-<p id="section-7-2">The IANA is requested to allocate a value
+<p id="section-6-1">This document registers the OID <code>id-alg-dhkem</code><a href="#section-6-1" class="pilcrow">¶</a></p>
+<p id="section-6-2">The IANA is requested to allocate a value
 from the "SMI Security for S/MIME Module Identifier" registry for the
 included ASN.1 module, and allocate values from "SMI Security for
-S/MIME Algorithms" to identify the new algorithm defined within.<a href="#section-7-2" class="pilcrow">¶</a></p>
+S/MIME Algorithms" to identify the new algorithm defined within.<a href="#section-6-2" class="pilcrow">¶</a></p>
 <div id="object-identifier-allocations">
-<section id="section-7.1">
+<section id="section-6.1">
         <h3 id="name-object-identifier-allocatio">
-<a href="#section-7.1" class="section-number selfRef">7.1. </a><a href="#name-object-identifier-allocatio" class="section-name selfRef">Object Identifier Allocations</a>
+<a href="#section-6.1" class="section-number selfRef">6.1. </a><a href="#name-object-identifier-allocatio" class="section-name selfRef">Object Identifier Allocations</a>
         </h3>
 <div id="module-registration-smi-security-for-smime-module-identifer">
-<section id="section-7.1.1">
+<section id="section-6.1.1">
           <h4 id="name-module-registration-smi-sec">
-<a href="#section-7.1.1" class="section-number selfRef">7.1.1. </a><a href="#name-module-registration-smi-sec" class="section-name selfRef">Module Registration - SMI Security for S/MIME Module Identifer</a>
+<a href="#section-6.1.1" class="section-number selfRef">6.1.1. </a><a href="#name-module-registration-smi-sec" class="section-name selfRef">Module Registration - SMI Security for S/MIME Module Identifer</a>
           </h4>
 <ul class="normal">
-<li class="normal" id="section-7.1.1-1.1">
-              <p id="section-7.1.1-1.1.1">Decimal: IANA Assigned - Replace TBDMOD<a href="#section-7.1.1-1.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="section-6.1.1-1.1">
+              <p id="section-6.1.1-1.1.1">Decimal: IANA Assigned - Replace TBDMOD<a href="#section-6.1.1-1.1.1" class="pilcrow">¶</a></p>
 </li>
-            <li class="normal" id="section-7.1.1-1.2">
-              <p id="section-7.1.1-1.2.1">Description: CMS-DHKEM-2023 - id-mod-cms-dhkem-2023<a href="#section-7.1.1-1.2.1" class="pilcrow">¶</a></p>
+            <li class="normal" id="section-6.1.1-1.2">
+              <p id="section-6.1.1-1.2.1">Description: CMS-DHKEM-2023 - id-mod-cms-dhkem-2023<a href="#section-6.1.1-1.2.1" class="pilcrow">¶</a></p>
 </li>
-            <li class="normal" id="section-7.1.1-1.3">
-              <p id="section-7.1.1-1.3.1">References: This Document<a href="#section-7.1.1-1.3.1" class="pilcrow">¶</a></p>
+            <li class="normal" id="section-6.1.1-1.3">
+              <p id="section-6.1.1-1.3.1">References: This Document<a href="#section-6.1.1-1.3.1" class="pilcrow">¶</a></p>
 </li>
           </ul>
 </section>
 </div>
 <div id="object-identifier-registrations-smi-security-for-smime-attributes">
-<section id="section-7.1.2">
+<section id="section-6.1.2">
           <h4 id="name-object-identifier-registrat">
-<a href="#section-7.1.2" class="section-number selfRef">7.1.2. </a><a href="#name-object-identifier-registrat" class="section-name selfRef">Object Identifier Registrations - SMI Security for S/MIME Attributes</a>
+<a href="#section-6.1.2" class="section-number selfRef">6.1.2. </a><a href="#name-object-identifier-registrat" class="section-name selfRef">Object Identifier Registrations - SMI Security for S/MIME Attributes</a>
           </h4>
 <ul class="normal">
-<li class="normal" id="section-7.1.2-1.1">
-              <p id="section-7.1.2-1.1.1">DHKEM<a href="#section-7.1.2-1.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="section-6.1.2-1.1">
+              <p id="section-6.1.2-1.1.1">DHKEM<a href="#section-6.1.2-1.1.1" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-7.1.2-1.1.2.1">
-                  <p id="section-7.1.2-1.1.2.1.1">Decimal: IANA Assigned - Replace TBDALG<a href="#section-7.1.2-1.1.2.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="section-6.1.2-1.1.2.1">
+                  <p id="section-6.1.2-1.1.2.1.1">Decimal: IANA Assigned - Replace TBDALG<a href="#section-6.1.2-1.1.2.1.1" class="pilcrow">¶</a></p>
 </li>
-                <li class="normal" id="section-7.1.2-1.1.2.2">
-                  <p id="section-7.1.2-1.1.2.2.1">Description: id-alg-dhkem<a href="#section-7.1.2-1.1.2.2.1" class="pilcrow">¶</a></p>
+                <li class="normal" id="section-6.1.2-1.1.2.2">
+                  <p id="section-6.1.2-1.1.2.2.1">Description: id-alg-dhkem<a href="#section-6.1.2-1.1.2.2.1" class="pilcrow">¶</a></p>
 </li>
-                <li class="normal" id="section-7.1.2-1.1.2.3">
-                  <p id="section-7.1.2-1.1.2.3.1">References: This Document<a href="#section-7.1.2-1.1.2.3.1" class="pilcrow">¶</a></p>
+                <li class="normal" id="section-6.1.2-1.1.2.3">
+                  <p id="section-6.1.2-1.1.2.3.1">References: This Document<a href="#section-6.1.2-1.1.2.3.1" class="pilcrow">¶</a></p>
 </li>
               </ul>
 </li>
@@ -1502,14 +1575,14 @@ S/MIME Algorithms" to identify the new algorithm defined within.<a href="#sectio
 </div>
 </section>
 </div>
-<section id="section-8">
+<section id="section-7">
       <h2 id="name-references">
-<a href="#section-8" class="section-number selfRef">8. </a><a href="#name-references" class="section-name selfRef">References</a>
+<a href="#section-7" class="section-number selfRef">7. </a><a href="#name-references" class="section-name selfRef">References</a>
       </h2>
 <div id="sec-normative-references">
-<section id="section-8.1">
+<section id="section-7.1">
         <h3 id="name-normative-references">
-<a href="#section-8.1" class="section-number selfRef">8.1. </a><a href="#name-normative-references" class="section-name selfRef">Normative References</a>
+<a href="#section-7.1" class="section-number selfRef">7.1. </a><a href="#name-normative-references" class="section-name selfRef">Normative References</a>
         </h3>
 <dl class="references">
 <dt id="I-D.ietf-lamps-cms-kemri">[I-D.ietf-lamps-cms-kemri]</dt>
@@ -1537,16 +1610,20 @@ S/MIME Algorithms" to identify the new algorithm defined within.<a href="#sectio
 <span class="refAuthor">Housley, R.</span>, <span class="refTitle">"Cryptographic Message Syntax (CMS)"</span>, <span class="seriesInfo">STD 70</span>, <span class="seriesInfo">RFC 5652</span>, <span class="seriesInfo">DOI 10.17487/RFC5652</span>, <time datetime="2009-09" class="refDate">September 2009</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc5652">https://www.rfc-editor.org/rfc/rfc5652</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="RFC8174">[RFC8174]</dt>
-      <dd>
+        <dd>
 <span class="refAuthor">Leiba, B.</span>, <span class="refTitle">"Ambiguity of Uppercase vs Lowercase in RFC 2119 Key Words"</span>, <span class="seriesInfo">BCP 14</span>, <span class="seriesInfo">RFC 8174</span>, <span class="seriesInfo">DOI 10.17487/RFC8174</span>, <time datetime="2017-05" class="refDate">May 2017</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc8174">https://www.rfc-editor.org/rfc/rfc8174</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC8551">[RFC8551]</dt>
+      <dd>
+<span class="refAuthor">Schaad, J.</span>, <span class="refAuthor">Ramsdell, B.</span>, and <span class="refAuthor">S. Turner</span>, <span class="refTitle">"Secure/Multipurpose Internet Mail Extensions (S/MIME) Version 4.0 Message Specification"</span>, <span class="seriesInfo">RFC 8551</span>, <span class="seriesInfo">DOI 10.17487/RFC8551</span>, <time datetime="2019-04" class="refDate">April 2019</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc8551">https://www.rfc-editor.org/rfc/rfc8551</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 </dl>
 </section>
 </div>
 <div id="sec-informative-references">
-<section id="section-8.2">
+<section id="section-7.2">
         <h3 id="name-informative-references">
-<a href="#section-8.2" class="section-number selfRef">8.2. </a><a href="#name-informative-references" class="section-name selfRef">Informative References</a>
+<a href="#section-7.2" class="section-number selfRef">7.2. </a><a href="#name-informative-references" class="section-name selfRef">Informative References</a>
         </h3>
 <dl class="references">
 <dt id="RFC5990">[RFC5990]</dt>
@@ -1561,16 +1638,135 @@ S/MIME Algorithms" to identify the new algorithm defined within.<a href="#sectio
 </section>
 </div>
 </section>
-<div id="acknowledgments">
+<div id="appdx-dhkem">
 <section id="appendix-A">
+      <h2 id="name-dh-based-kem-dhkem-algorith">
+<a href="#appendix-A" class="section-number selfRef">Appendix A. </a><a href="#name-dh-based-kem-dhkem-algorith" class="section-name selfRef">DH-Based KEM (DHKEM) Algorithm</a>
+    </h2>
+</section>
+</div>
+<div id="cryptographic-dependencies">
+<section id="appendix-B">
+      <h2 id="name-cryptographic-dependencies">
+<a href="#appendix-B" class="section-number selfRef">Appendix B. </a><a href="#name-cryptographic-dependencies" class="section-name selfRef">Cryptographic dependencies</a>
+      </h2>
+<div id="key-derivation-function">
+<section id="appendix-B.1">
+        <h3 id="name-key-derivation-function">
+<a href="#appendix-B.1" class="section-number selfRef">B.1. </a><a href="#name-key-derivation-function" class="section-name selfRef">Key Derivation Function</a>
+        </h3>
+<p id="appendix-B.1-1">A key derivation function (KDF):<a href="#appendix-B.1-1" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="appendix-B.1-2.1">
+            <p id="appendix-B.1-2.1.1"><code>Extract(salt, ikm) -&gt; prk</code>: Extract a pseudorandom key of fixed length <code>keyLength</code> bytes from input keying material <code>ikm</code> and an optional byte string <code>salt</code>.<a href="#appendix-B.1-2.1.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="appendix-B.1-2.2">
+            <p id="appendix-B.1-2.2.1"><code>Expand(prk, info, L) -&gt; ss</code>: Expand a pseudorandom key <code>prk</code> using optional string info into <code>L</code> bytes of output keying material.<a href="#appendix-B.1-2.2.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="appendix-B.1-2.3">
+            <p id="appendix-B.1-2.3.1"><code>keyLength</code>: The output size of the <code>Extract()</code> function in bytes.<a href="#appendix-B.1-2.3.1" class="pilcrow">¶</a></p>
+</li>
+        </ul>
+<p id="appendix-B.1-3">In the pseudo-code below, these are combined into a single function:<a href="#appendix-B.1-3" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="appendix-B.1-4.1">
+            <p id="appendix-B.1-4.1.1"><code>ExtractAndExpand(ikm, info) -&gt; ss</code>.<a href="#appendix-B.1-4.1.1" class="pilcrow">¶</a></p>
+</li>
+        </ul>
+</section>
+</div>
+<div id="elliptic-curve-diffie-hellman">
+<section id="appendix-B.2">
+        <h3 id="name-elliptic-curve-diffie-hellm">
+<a href="#appendix-B.2" class="section-number selfRef">B.2. </a><a href="#name-elliptic-curve-diffie-hellm" class="section-name selfRef">(Elliptic Curve) Diffie Hellman</a>
+        </h3>
+<p id="appendix-B.2-1">An elliptic curve or finite field Diffie-Hellman group providing the following operations:<a href="#appendix-B.2-1" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="appendix-B.2-2.1">
+            <p id="appendix-B.2-2.1.1"><code>GenerateKeyPair() -&gt; (pk, sk)</code>: create a new DH key.<a href="#appendix-B.2-2.1.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="appendix-B.2-2.2">
+            <p id="appendix-B.2-2.2.1"><code>DH(skX, pkY) -&gt; ss</code>: Perform a non-interactive Diffie-Hellman exchange using the private key <code>skX</code> and public key <code>pkY</code> to produce a Diffie-Hellman shared secret of length <code>Ndh</code>. This function can raise a ValidationError as described in <span>[<a href="#RFC9180" class="cite xref">RFC9180</a>]</span> Section 7.1.4.<a href="#appendix-B.2-2.2.1" class="pilcrow">¶</a></p>
+</li>
+        </ul>
+<p id="appendix-B.2-3">These definitions are taken from <span>[<a href="#RFC9180" class="cite xref">RFC9180</a>]</span> and reproduced here for convenience.<a href="#appendix-B.2-3" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="dhkem">
+<section id="appendix-B.3">
+        <h3 id="name-dhkem">
+<a href="#appendix-B.3" class="section-number selfRef">B.3. </a><a href="#name-dhkem" class="section-name selfRef">DHKEM</a>
+        </h3>
+<p id="appendix-B.3-1">KDF functions:<a href="#appendix-B.3-1" class="pilcrow">¶</a></p>
+<span id="name-kdf-functions-from-rfc-9180"></span><div id="code-9180kdfs">
+<figure id="figure-1">
+          <div class="alignLeft art-text artwork" id="appendix-B.3-2.1">
+<pre>
+def LabeledExtract(salt, label, ikm):
+  labeled_ikm = concat("HPKE-v1", suite_id, label, ikm)
+  return Extract(salt, labeled_ikm)
+
+def LabeledExpand(prk, label, info, L):
+  labeled_info = concat(I2OSP(L, 2), "HPKE-v1", suite_id,
+                        label, info)
+  return Expand(prk, labeled_info, L)
+
+def ExtractAndExpand(dh, kem_context):
+  eae_prk = LabeledExtract("", "eae_prk", dh)
+  shared_secret = LabeledExpand(eae_prk, "shared_secret",
+                                kem_context, Nsecret)
+  return shared_secret
+</pre>
+</div>
+<figcaption><a href="#figure-1" class="selfRef">Figure 1</a>:
+<a href="#name-kdf-functions-from-rfc-9180" class="selfRef">KDF functions from RFC 9180</a>
+          </figcaption></figure>
+</div>
+<p id="appendix-B.3-3">DHKEM functions:<a href="#appendix-B.3-3" class="pilcrow">¶</a></p>
+<span id="name-dhkem-functions-from-rfc-91"></span><div id="code-9180dhkem">
+<figure id="figure-2">
+          <div class="alignLeft art-text artwork" id="appendix-B.3-4.1">
+<pre>
+def Encap(pkR):
+  skE, pkE = GenerateKeyPair()
+  dh = DH(skE, pkR)
+  enc = SerializePublicKey(pkE)
+
+  pkRm = SerializePublicKey(pkR)
+  kem_context = concat(enc, pkRm)
+
+  shared_secret = ExtractAndExpand(dh, kem_context)
+  return shared_secret, enc
+
+def Decap(enc, skR):
+  pkE = DeserializePublicKey(enc)
+  dh = DH(skR, pkE)
+
+  pkRm = SerializePublicKey(pk(skR))
+  kem_context = concat(enc, pkRm)
+
+  shared_secret = ExtractAndExpand(dh, kem_context)
+  return shared_secret
+</pre>
+</div>
+<figcaption><a href="#figure-2" class="selfRef">Figure 2</a>:
+<a href="#name-dhkem-functions-from-rfc-91" class="selfRef">DHKEM functions from RFC 9180</a>
+          </figcaption></figure>
+</div>
+</section>
+</div>
+</section>
+</div>
+<div id="acknowledgments">
+<section id="appendix-C">
       <h2 id="name-acknowledgments">
 <a href="#name-acknowledgments" class="section-name selfRef">Acknowledgments</a>
       </h2>
-<p id="appendix-A-1">TODO acknowledge.<a href="#appendix-A-1" class="pilcrow">¶</a></p>
+<p id="appendix-C-1">TODO acknowledge.<a href="#appendix-C-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="authors-addresses">
-<section id="appendix-B">
+<section id="appendix-D">
       <h2 id="name-authors-addresses">
 <a href="#name-authors-addresses" class="section-name selfRef">Authors' Addresses</a>
       </h2>
