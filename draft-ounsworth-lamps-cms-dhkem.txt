@@ -5,9 +5,9 @@
 LAMPS                                                       M. Ounsworth
 Internet-Draft                                                   J. Gray
 Intended status: Standards Track                                 Entrust
-Expires: 15 June 2024                                         R. Housley
+Expires: 16 June 2024                                         R. Housley
                                                           Vigil Security
-                                                        13 December 2023
+                                                        14 December 2023
 
 
   Use of the DH-Based KEM (DHKEM) in the Cryptographic Message Syntax
@@ -59,7 +59,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 15 June 2024.
+   This Internet-Draft will expire on 16 June 2024.
 
 Copyright Notice
 
@@ -83,22 +83,25 @@ Table of Contents
      3.1.  RecipientInfo Conventions
      3.2.  Certificate Conventions
      3.3.  SMIMECapabilities Attribute Conventions
-   4.  ASN.1 Module
-   5.  Security Considerations
-   6.  IANA Considerations
-     6.1.  Object Identifier Allocations
-       6.1.1.  Module Registration - SMI Security for S/MIME Module
+   4.  DHKEM Algorithms
+   5.  ASN.1 Module
+   6.  Security Considerations
+   7.  IANA Considerations
+     7.1.  Object Identifier Allocations
+       7.1.1.  Module Registration - SMI Security for S/MIME Module
                Identifer
-       6.1.2.  Object Identifier Registrations - SMI Security for S/
+       7.1.2.  Object Identifier Registrations - SMI Security for S/
                MIME Attributes
-   7.  References
-     7.1.  Normative References
-     7.2.  Informative References
+   8.  References
+     8.1.  Normative References
+     8.2.  Informative References
    Appendix A.  DH-Based KEM (DHKEM) Algorithm
    Appendix B.  Cryptographic dependencies
      B.1.  Key Derivation Function
      B.2.  (Elliptic Curve) Diffie Hellman
      B.3.  DHKEM
+       B.3.1.  KDF Functions
+       B.3.2.  DHKEM Functions
    Acknowledgments
    Authors' Addresses
 
@@ -180,6 +183,41 @@ Table of Contents
    through separate digital signatures.
 
 3.1.  RecipientInfo Conventions
+
+   When the DHKEM Algorithm is employed for a recipient, the
+   RecipientInfo alternative for that recipient MUST be
+   OtherRecipientInfo using the KEMRecipientInfo structure
+   [I-D.ietf-lamps-cms-kemri].  The fields of the KEMRecipientInfo MUST
+   have the following values:
+
+     version is the syntax version number; it MUST be 0.
+
+     rid identifies the recipient's certificate or public key.
+
+     kem identifies the KEM algorithm; it MUST contain one of the
+     algorithms listed in {{sec-dhkem-algs}}.
+
+     kemct is the ciphertext produced for this recipient; it contains
+     the output `enc` from `Encap(pkR)` from {{appdx-dhkem-alg}}, which
+     is the serialized ephemeral public key of the sender.
+
+     kdf identifies the key-derivation algorithm.
+
+     kekLength is the size of the key-encryption key in octets.
+
+     ukm is an optional random input to the key-derivation function.
+
+     wrap identifies a key-encryption algorithm used to encrypt the
+     content-encryption key.
+
+     encryptedKey is the result of encrypting the keying material with
+     the key-encryption key.  When used with the CMS enveloped-data
+     content type [RFC5652], the keying material is a content-
+     encryption key.  When used with the CMS authenticated-data content
+     type [RFC5652], the keying material is a message-authentication
+     key.  When used with the CMS authenticated-enveloped-data content
+     type [RFC5083], the keying material is a content-authenticated-
+     encryption key.
 
    TODO:
 
@@ -264,7 +302,55 @@ Table of Contents
 
    TODO: kaa-X25519, kaa-x448 from 8410
 
-4.  ASN.1 Module
+4.  DHKEM Algorithms
+
+   TODO: a big table ...
+
+   This section provides a registry of algorithms to satisfy the
+   specific DHKEM and KDF algoritms required in Appendix B.3.
+
+    +===============+======================+=============+===========+
+    | DHKEM         | DH Algorithm         | KDF         | kekLength |
+    | Algorithm OID |                      | Algorithm   |           |
+    +===============+======================+=============+===========+
+    | TBD-DHKEM1    | ECDH-P256            | HKDF-SHA256 | 32        |
+    +---------------+----------------------+-------------+-----------+
+    | TBD-DHKEM2    | ECDH-brainpoolP256r1 | HKDF-SHA256 | 32        |
+    +---------------+----------------------+-------------+-----------+
+    | TBD-DHKEM3    | X25519               | HKDF-SHA256 | 32        |
+    +---------------+----------------------+-------------+-----------+
+    | TBD-DHKEM4    | ECDH-P384            | HKDF-SHA384 | 48        |
+    +---------------+----------------------+-------------+-----------+
+    | TBD-DHKEM5    | ECDH-brainpoolP384r1 | HKDF-SHA384 | 48        |
+    +---------------+----------------------+-------------+-----------+
+    | TBD-DHKEM6    | X448                 | HKDF-SHA512 | 64        |
+    +---------------+----------------------+-------------+-----------+
+
+                   Table 1: Registered DHKEM Algorithms
+
+   Full specifications for the referenced algorithms can be found as
+   follows:
+
+   *  _ECDH_: There does not appear to be a single IETF definition of
+      ECDH, so we refer to the following:
+
+      -  _ECDH NIST_: SHALL be Elliptic Curve Cryptography Cofactor
+         Diffie-Hellman (ECC CDH) as defined in section 5.7.1.2 of
+         [SP.800-56Ar3].
+
+      -  _ECDH BSI / brainpool_: SHALL be Elliptic Curve Key Agreement
+         algorithm (ECKA) as defined in section 4.3.1 of [BSI-ECC]
+
+   *  _X25519 / X448_: [RFC7784]
+
+   *  _HKDF-SHA2_: [RFC5869].
+
+   blah blah when used in an AlgorithmIdentifier ... empty params.
+
+   blah blah KDF and kekLen MUST be the same as specified in KEMRI ...
+   copy the language from 5990bis.
+
+5.  ASN.1 Module
 
    In order to carry a DHKEM inside a CMS KEMRecipientInfo
    [I-D.ietf-lamps-cms-kemri], we define id-kem-dhkem, kema-dhkem, and
@@ -344,7 +430,7 @@ Table of Contents
    agility and future-proofing.  I would be happy to write them each out
    if that's considered better.
 
-5.  Security Considerations
+6.  Security Considerations
 
    This document provides an IND-CCA2 secure DHKEM construction.
 
@@ -352,7 +438,7 @@ Table of Contents
    already present for the Ephemeral-Static mode of the underlying
    (EC)DH primitive and in [RFC9180].
 
-6.  IANA Considerations
+7.  IANA Considerations
 
    This document registers the OID id-alg-dhkem
 
@@ -361,9 +447,9 @@ Table of Contents
    allocate values from "SMI Security for S/MIME Algorithms" to identify
    the new algorithm defined within.
 
-6.1.  Object Identifier Allocations
+7.1.  Object Identifier Allocations
 
-6.1.1.  Module Registration - SMI Security for S/MIME Module Identifer
+7.1.1.  Module Registration - SMI Security for S/MIME Module Identifer
 
    *  Decimal: IANA Assigned - Replace TBDMOD
 
@@ -371,7 +457,7 @@ Table of Contents
 
    *  References: This Document
 
-6.1.2.  Object Identifier Registrations - SMI Security for S/MIME
+7.1.2.  Object Identifier Registrations - SMI Security for S/MIME
         Attributes
 
    *  DHKEM
@@ -382,9 +468,9 @@ Table of Contents
 
       -  References: This Document
 
-7.  References
+8.  References
 
-7.1.  Normative References
+8.1.  Normative References
 
    [I-D.ietf-lamps-cms-kemri]
               Housley, R., Gray, J., and T. Okubo, "Using Key
@@ -421,6 +507,10 @@ Table of Contents
               RFC 5652, DOI 10.17487/RFC5652, September 2009,
               <https://www.rfc-editor.org/rfc/rfc5652>.
 
+   [RFC7748]  Langley, A., Hamburg, M., and S. Turner, "Elliptic Curves
+              for Security", RFC 7748, DOI 10.17487/RFC7748, January
+              2016, <https://www.rfc-editor.org/rfc/rfc7748>.
+
    [RFC8174]  Leiba, B., "Ambiguity of Uppercase vs Lowercase in RFC
               2119 Key Words", BCP 14, RFC 8174, DOI 10.17487/RFC8174,
               May 2017, <https://www.rfc-editor.org/rfc/rfc8174>.
@@ -430,7 +520,7 @@ Table of Contents
               Message Specification", RFC 8551, DOI 10.17487/RFC8551,
               April 2019, <https://www.rfc-editor.org/rfc/rfc8551>.
 
-7.2.  Informative References
+8.2.  Informative References
 
    [RFC5990]  Randall, J., Kaliski, B., Brainard, J., and S. Turner,
               "Use of the RSA-KEM Key Transport Algorithm in the
@@ -480,7 +570,9 @@ B.2.  (Elliptic Curve) Diffie Hellman
 
 B.3.  DHKEM
 
-   KDF functions:
+B.3.1.  KDF Functions
+
+   The KDF functions are defined as follows.
 
    def LabeledExtract(salt, label, ikm):
      labeled_ikm = concat("HPKE-v1", suite_id, label, ikm)
@@ -499,7 +591,13 @@ B.3.  DHKEM
 
                    Figure 1: KDF functions from RFC 9180
 
-   DHKEM functions:
+   Note that the KDF functions require Extract(), which is a direct call
+   to the underlying KDF, which [RFC9180] allows to be HKDF-SHA256,
+   HKDF-SHA384, or HKDF-SHA512.
+
+B.3.2.  DHKEM Functions
+
+   The DHKEM functions are defined as follows:
 
    def Encap(pkR):
      skE, pkE = GenerateKeyPair()
@@ -523,6 +621,10 @@ B.3.  DHKEM
      return shared_secret
 
                   Figure 2: DHKEM functions from RFC 9180
+
+   Note that the DHKEM functions require GenerateKeyPair(), DH(sk, pk),
+   SerializePublicKey(pk), and DeserializePublicKey(enc), which are
+   provided by the underlying DH scheme.
 
 Acknowledgments
 
