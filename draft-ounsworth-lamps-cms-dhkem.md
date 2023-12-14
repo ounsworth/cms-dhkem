@@ -56,6 +56,7 @@ normative:
   RFC5083:
   RFC5280:
   RFC5652:
+  RFC7748:
   I-D.ietf-lamps-cms-kemri:
   I-D.ietf-lamps-pq-composite-kem:
 
@@ -137,6 +138,7 @@ recipient's static public key.
 
 {::boilerplate bcp14-tagged}
 
+
 # Use of DHKEM  in CMS
 
 This is a straightforward application of the DHKEM construction from
@@ -150,6 +152,41 @@ do not apply to CMS because CMS uses DH in only the ephemeral-static modes and p
 
 
 ## RecipientInfo Conventions
+
+When the DHKEM Algorithm is employed for a recipient, the
+   RecipientInfo alternative for that recipient MUST be
+   OtherRecipientInfo using the KEMRecipientInfo structure
+   [I-D.ietf-lamps-cms-kemri].  The fields of the KEMRecipientInfo MUST
+   have the following values:
+
+      version is the syntax version number; it MUST be 0.
+
+      rid identifies the recipient's certificate or public key.
+
+      kem identifies the KEM algorithm; it MUST contain one of the
+      algorithms listed in {{sec-dhkem-algs}}.
+
+      kemct is the ciphertext produced for this recipient; it contains
+      the output `enc` from `Encap(pkR)` from {{appdx-dhkem-alg}}, which
+      is the serialized ephemeral public key of the sender.
+
+      kdf identifies the key-derivation algorithm.
+
+      kekLength is the size of the key-encryption key in octets.
+
+      ukm is an optional random input to the key-derivation function.
+
+      wrap identifies a key-encryption algorithm used to encrypt the
+      content-encryption key.
+
+      encryptedKey is the result of encrypting the keying material with
+      the key-encryption key.  When used with the CMS enveloped-data
+      content type [RFC5652], the keying material is a content-
+      encryption key.  When used with the CMS authenticated-data content
+      type [RFC5652], the keying material is a message-authentication
+      key.  When used with the CMS authenticated-enveloped-data content
+      type [RFC5083], the keying material is a content-authenticated-
+      encryption key.
 
 TODO:
 
@@ -241,6 +278,33 @@ TODO: KEY-AGREE FROM AlgorithmInformation-2009
 
 TODO: kaa-X25519, kaa-x448 from 8410
 
+# DHKEM Algorithms {#sec-dhkem-algs}
+
+TODO: a big table ...
+
+This section provides a registry of algorithms to satisfy the specific
+DHKEM and KDF algoritms required in {{appdx-dhkem-alg}}.
+
+| DHKEM Algorithm OID | DH Algorithm         | KDF Algorithm | kekLength |
+| TBD-DHKEM1          | ECDH-P256            | HKDF-SHA256   | 32        |
+| TBD-DHKEM2          | ECDH-brainpoolP256r1 | HKDF-SHA256   | 32        |
+| TBD-DHKEM3          | X25519               | HKDF-SHA256   | 32        |
+| TBD-DHKEM4          | ECDH-P384            | HKDF-SHA384   | 48        |
+| TBD-DHKEM5          | ECDH-brainpoolP384r1 | HKDF-SHA384   | 48        |
+| TBD-DHKEM6          | X448                 | HKDF-SHA512   | 64        |
+{: #tab-dhkem-algs title="Registered DHKEM Algorithms"}
+
+Full specifications for the referenced algorithms can be found as follows:
+
+* _ECDH_: There does not appear to be a single IETF definition of ECDH, so we refer to the following:
+  * _ECDH NIST_: SHALL be Elliptic Curve Cryptography Cofactor Diffie-Hellman (ECC CDH) as defined in section 5.7.1.2 of [SP.800-56Ar3].
+  * _ECDH BSI / brainpool_: SHALL be Elliptic Curve Key Agreement algorithm (ECKA) as defined in section 4.3.1 of [BSI-ECC]
+* _X25519 / X448_: [RFC7784]
+* _HKDF-SHA2_: [RFC5869].
+
+blah blah when used in an AlgorithmIdentifier ... empty params.
+
+blah blah KDF and kekLen MUST be the same as specified in KEMRI ... copy the language from 5990bis.
 
 # ASN.1 Module
 
@@ -327,9 +391,11 @@ An elliptic curve or finite field Diffie-Hellman group providing the following o
 
 These definitions are taken from {{RFC9180}} and reproduced here for convenience.
 
-## DHKEM
+## DHKEM {#appdx-dhkem-alg}
 
-KDF functions:
+### KDF Functions
+
+The KDF functions are defined as follows.
 
 ~~~
 def LabeledExtract(salt, label, ikm):
@@ -349,7 +415,14 @@ def ExtractAndExpand(dh, kem_context):
 ~~~
 {: #code-9180kdfs title="KDF functions from RFC 9180"}
 
-DHKEM functions:
+Note that the KDF functions require `Extract()`, which is a direct call
+to the underlying KDF, which {{RFC9180}} allows to be HKDF-SHA256,
+HKDF-SHA384, or HKDF-SHA512.
+
+
+### DHKEM Functions
+
+The DHKEM functions are defined as follows:
 
 ~~~
 def Encap(pkR):
@@ -374,6 +447,10 @@ def Decap(enc, skR):
   return shared_secret
 ~~~
 {: #code-9180dhkem title="DHKEM functions from RFC 9180"}
+
+Note that the DHKEM functions require `GenerateKeyPair()`, `DH(sk, pk)`,
+`SerializePublicKey(pk)`, and `DeserializePublicKey(enc)`, which are
+provided by the underlying DH scheme.
 
 
 # Acknowledgments
