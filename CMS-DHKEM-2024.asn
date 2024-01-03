@@ -1,7 +1,7 @@
-CMS-DHKEM-2023
+CMS-DHKEM-2024
     { iso(1) member-body(2) us(840) rsadsi(113549)
       pkcs(1) pkcs-9(9) smime(16) modules(0)
-      id-mod-cms-dhkem-2023(TBDMOD) }
+      id-mod-cms-dhkem-2024(TBDMOD) }
 
   DEFINITIONS IMPLICIT TAGS ::=
   BEGIN
@@ -32,7 +32,18 @@ CMS-DHKEM-2023
       { iso(1) identified-organization(3) dod(6) internet(1)
         security(5) mechanisms(5) pkix(7) id-mod(0)
         id-mod-safecurves-pkix(93) } 
+
+TODO: imports:
+TODO: KEY-AGREE FROM AlgorithmInformation-2009
+       {iso(1) identified-organization(3) dod(6) internet(1) security(5)
+       mechanisms(5) pkix(7) id-mod(0)
+       id-mod-algorithmInformation-02(58)}
+
+TODO: kaa-X25519, kaa-x448 from 8410
+  
   ;
+
+
 
 
   id-alg-dhkem OBJECT IDENTIFIER ::= { iso(1) member-body(2) us(840)
@@ -44,16 +55,5 @@ CMS-DHKEM-2023
       PUBLIC-KEYS { pk-dh | pk-ec | pk-X25519 | pk-X448 }
       UKM ARE optional
       SMIME-CAPS { TYPE DHKemParameters IDENTIFIED BY id-kem-dhkem } }
-
-  DHKemParameters ::= SEQUENCE {
-      dh         KeyAgreeAlgorithmIdentifier,
-      kdf        KeyDerivationFunction,
-      keyLength  KeyLength }
-
-  KeyAgreeAlgorithmIdentifier ::= AlgorithmIdentifier{ KEY-AGREE, {...} }
-
-  KeyDerivationFunction ::= AlgorithmIdentifier { KEY-DERIVATION, {...} }
-
-  KeyLength ::= INTEGER (1..MAX)
 
 END

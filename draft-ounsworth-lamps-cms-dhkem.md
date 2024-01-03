@@ -61,6 +61,7 @@ normative:
   I-D.ietf-lamps-pq-composite-kem:
 
 informative:
+  RFC5480:
   RFC5990:
   RFC9180:
 
@@ -69,7 +70,7 @@ informative:
 
 The DHKEM Algorithm is a one-pass (store-and-forward)
 mechanism for establishing keying data to a recipient using the
-recipient's Diffie-Hellman or elliptic curve Diffie-Hellman public key.
+recipient's Diffie-Hellman or Elliptic Curve Diffie-Hellman public key.
 This document uses a straightforward application of {{RFC9180}} to define
 a mechanism to wrap Ephemeral-Static (E-S) Diffie-Hellman (DH) and Elliptic Curve
 Diffie-Hellman (ECDH) such that it can be used in KEM interfaces
@@ -87,12 +88,12 @@ The Cryptographic Message Syntax (CMS) enveloped-data content type
 {{RFC5652}} and the CMS authenticated-enveloped-data content type
 {{RFC5083}} support both key transport and key agreement algorithms to
 establish the key used to encrypt the content.  In recent years,
-cryptographers have be specifying asymmetric key establishment algorithms,
+cryptographers have been specifying asymmetric key establishment algorithms,
 including Post-Quantum algorithms as Key Encapsulation Mechanism (KEMs).
 This document defines conventions for wrapping Ephemeral-Static (E-S)
 Diffie-Hellman (DH) and Elliptic Curve Diffie-Hellman (ECDH) key agreements
 to fit the KEM interface for the CMS enveloped-data content type and the CMS
-authenticated-enveloped-data content type as defined in
+authenticated-enveloped-data content type via the KEMRecipientInfo as defined in
 {{I-D.ietf-lamps-cms-kemri}}.
 This is a parallel mechanism to {{RFC5990}} which does the same for RSA.
 The benefit is to allow forward-compatibility of older DH-based ciphers
@@ -151,7 +152,7 @@ The authenticated modes defined in {{RFC9180}}, `AuthEncap(pkR, skS)` and `AuthD
 do not apply to CMS because CMS uses DH in only the ephemeral-static modes and provides sender authentication through separate digital signatures.
 
 
-## RecipientInfo Conventions
+## RecipientInfo Conventions {#sec-ri}
 
 When the DHKEM Algorithm is employed for a recipient, the
    RecipientInfo alternative for that recipient MUST be
@@ -167,7 +168,7 @@ When the DHKEM Algorithm is employed for a recipient, the
       algorithms listed in {{sec-dhkem-algs}}.
 
       kemct is the ciphertext produced for this recipient; it contains
-      the output `enc` from `Encap(pkR)` from {{appdx-dhkem-alg}}, which
+      the output `enc` from `Encap(pkR)` which
       is the serialized ephemeral public key of the sender.
 
       kdf identifies the key-derivation algorithm.
@@ -188,11 +189,48 @@ When the DHKEM Algorithm is employed for a recipient, the
       type [RFC5083], the keying material is a content-authenticated-
       encryption key.
 
-TODO:
-
 ## Certificate Conventions
 
 TODO:
+
+The conventions specified in this section augment [RFC5280].
+
+A recipient who employs the DH-KEM key establishment algorithm MAY
+identify the public key in a certificate by the same
+AlgorithmIdentifier as for the underlying DH algorithm as listed in {{sec-dhkem-algs}},
+for example, using the id-ecPublicKey object identifier [RFC5480].
+The fact that the user will accept DH-KEM with this public key is not
+indicated by the use of this identifier.  This MAY be signaled by the use of the
+appropriate SMIME Capabilities either in a message or in the certificate.
+
+If the recipient wishes only to employ the DH-KEM key establishment
+algorithm with a given public key, the recipient MUST identify the
+public key in the certificate using one of the object identifiers
+listed in {{sec-dhkem-algs}}.  When a DH-KEM algorithm identifier appears
+in the SubjectPublicKeyInfo algorithm field, the encoding SHALL omit
+the parameters field from AlgorithmIdentifier.  That is, the
+AlgorithmIdentifier SHALL be a SEQUENCE of one component, the DH-KEM object
+identifier.
+
+Regardless of the AlgorithmIdentifier used, the RSA public key is
+encoded in the same manner in the subject public key information.
+The RSA public key MUST be encoded as per the underlying DH Algorithm.
+
+The intended application for the key MAY be indicated in the key
+usage certificate extension (see [RFC5280], Section 4.2.1.3).  If the
+keyUsage extension is present in a certificate that conveys a
+public key for use with a DH-KEM algorithm as discussed above,
+then the key usage extension MUST contain the following value:
+
+    keyEncipherment
+
+keyAgreement MAY be present if the key is also meant to be used with
+traditional Key Agreement Algorithms. By convention, KEM Algorithms
+use the keyEncipmerment keyUsage.
+
+dataEncipherment SHOULD NOT be present. Key Usages related to digital
+signatures MUST NOT be present.
+
 
 ## SMIMECapabilities Attribute Conventions
 
@@ -204,18 +242,11 @@ can support.  When constructing a CMS signed-data content type
 SMIMECapabilities signed attribute announcing that it supports the
 DHKEM Algorithm.
 
-The SMIMECapability SEQUENCE representing the RSA-KEM Algorithm MUST
-include the id-rsa-kem-spki object identifier in the capabilityID
-field; see Appendix B for the object identifier value, and see
-Appendix C for examples.  When the id-rsa-kem-spki object identifier
-appears in the capabilityID field and the parameters are present,
-then the parameters field MUST use the GenericHybridParameters type, which is defined in {{I-D.ietf-lamps-cms-kemri}}.
+The SMIMECapability SEQUENCE representing the DHKEM Algorithm MUST
+include one of the object identifiers listed in {{sec-dhkem-algs}} in the capabilityID
+field.  A DHKEM algorithm MUST be used with the KEMRecipientInfo with
+its field populated as specified in {{sec-ri}}.
 
-~~~
-  GenericHybridParameters ::= SEQUENCE {
-    kem  KeyEncapsulationMechanism,
-    dem  DataEncapsulationMechanism }
-~~~
 
 The definition of KEMAlgorithms from {{I-D.ietf-lamps-cms-kemri}}
 
@@ -227,33 +258,7 @@ is extended to add `kema-dhkem`.
 
 TODO / EDNOTE: I actually don't know how to extend something in ASN.1.
 
-The fields of the GenericHybridParameters type have the following
-meanings:
-
-  kem is an AlgorithmIdentifer; the algorithm field MUST be set to
-  id-alg-dhkem; the parameters field MUST be DhKemParameters, which
-  is a SEQUENCE of an AlgorithmIdentifier that identifies the underlying
-  Diffie-Hellman algorithm, an AlgorithmIdentifier that identifies the
-  supported key-derivation function and a positive INTEGER that
-  identifies the length of the key-encryption key in octets.  If the
-  GenericHybridParameters are present, then the provided keyDerivationFunction
-  value MUST be used as the key-derivation function in the kdf field of
-  KEMRecipientInfo, and the provided key length MUST be used in the
-  kekLength of KEMRecipientInfo.
-
-  dem is an AlgorithmIdentifier; the algorithm field MUST be
-  present, and it identifies the key-encryption algorithm;
-  parameters are optional.  If the GenericHybridParameters are
-  present, then the provided dem value MUST be used in the wrap
-  field of KEMRecipientInfo.
-
-
 ~~~
-DhKemParameters ::= SEQUENCE {
-  dhAlg                  DhAlgorithm,
-  keyDerivationFunction  KeyDerivationFunction,
-  keyLength              KeyLength }
-
 DhAlgorithm ::=
   AlgorithmIdentifier { KEY-AGREE, {DhAlgorithms} }
 
@@ -270,17 +275,7 @@ EDNOTE: I kinda just want to borrow / extend this from RFC8418:
      kaa-dhSinglePass-stdDH-hkdf-sha512-scheme }
 ~~~
 
-TODO: imports:
-TODO: KEY-AGREE FROM AlgorithmInformation-2009
-       {iso(1) identified-organization(3) dod(6) internet(1) security(5)
-       mechanisms(5) pkix(7) id-mod(0)
-       id-mod-algorithmInformation-02(58)}
-
-TODO: kaa-X25519, kaa-x448 from 8410
-
 # DHKEM Algorithms {#sec-dhkem-algs}
-
-TODO: a big table ...
 
 This section provides a registry of algorithms to satisfy the specific
 DHKEM and KDF algoritms required in {{appdx-dhkem-alg}}.
@@ -317,7 +312,7 @@ TODO: sync this up with the extra stuff added in the body.
 
 <CODE STARTS>
 
-{::include CMS-DHKEM-2023.asn}
+{::include CMS-DHKEM-2024.asn}
 
 <CODE ENDS>
 
@@ -325,7 +320,7 @@ TODO: sync this up with the extra stuff added in the body.
 
 EDNOTE: The other way to define this would be to call out a toplevel DHKEM for each one: `id-kema-dhkem-dh` `id-kema-dhkem-ecdh`, `id-kema-dhkem-x25519`, `id-kema-dhkem-x448`.
 
-EDNOTE: This approach adds a layer of wrapping for the benefit of agility and future-proofing. I would be happy to write them each out if that's considered better.
+EDNOTE: This approach adds a layer of wrapping for the benefit of agility and future-proofing. I would be happy to unroll them into separate OIDs if that's considered better.
 
 # Security Considerations
 
@@ -367,6 +362,8 @@ S/MIME Algorithms" to identify the new algorithm defined within.
 
 
 # DH-Based KEM (DHKEM) Algorithm {#appdx-dhkem}
+
+TODO
 
 # Cryptographic dependencies
 
