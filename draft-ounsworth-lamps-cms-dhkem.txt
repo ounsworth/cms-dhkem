@@ -5,9 +5,9 @@
 LAMPS                                                       M. Ounsworth
 Internet-Draft                                                   J. Gray
 Intended status: Standards Track                                 Entrust
-Expires: 6 July 2024                                          R. Housley
+Expires: 7 July 2024                                          R. Housley
                                                           Vigil Security
-                                                          3 January 2024
+                                                          4 January 2024
 
 
   Use of the DH-Based KEM (DHKEM) in the Cryptographic Message Syntax
@@ -59,7 +59,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 6 July 2024.
+   This Internet-Draft will expire on 7 July 2024.
 
 Copyright Notice
 
@@ -353,10 +353,7 @@ Table of Contents
 5.  ASN.1 Module
 
    In order to carry a DHKEM inside a CMS KEMRecipientInfo
-   [I-D.ietf-lamps-cms-kemri], we define id-kem-dhkem, kema-dhkem, and
-   DHKemParameters.
-
-   TODO: sync this up with the extra stuff added in the body.
+   [I-D.ietf-lamps-cms-kemri], we define OIDs for each DHKEM algorithm.
 
    <CODE STARTS>
 
@@ -408,15 +405,41 @@ Table of Contents
 
 
 
-     id-alg-dhkem OBJECT IDENTIFIER ::= { iso(1) member-body(2) us(840)
-         rsadsi(113549) pkcs(1) pkcs-9(9) smime(16) alg(3) TBDALG }
+     id-alg-dhkem-ecdh-p256 OBJECT IDENTIFIER ::= { iso(1) member-body(2) us(840)
+         rsadsi(113549) pkcs(1) pkcs-9(9) smime(16) alg(3) TBD-DHKEM1 }
+
+
+     id-alg-dhkem-ecdh-brainpoolp256r1 OBJECT IDENTIFIER ::= { iso(1) member-body(2) us(840)
+         rsadsi(113549) pkcs(1) pkcs-9(9) smime(16) alg(3) TBD-DHKEM2 }
+
+
+     id-alg-dhkem-x25519 OBJECT IDENTIFIER ::= { iso(1) member-body(2) us(840)
+         rsadsi(113549) pkcs(1) pkcs-9(9) smime(16) alg(3) TBD-DHKEM3 }
+
+
+     id-alg-dhkem-ecdh-p384 OBJECT IDENTIFIER ::= { iso(1) member-body(2) us(840)
+         rsadsi(113549) pkcs(1) pkcs-9(9) smime(16) alg(3) TBD-DHKEM4 }
+
+
+     id-alg-dhkem-ecdh-brainpoolp384r1 OBJECT IDENTIFIER ::= { iso(1) member-body(2) us(840)
+         rsadsi(113549) pkcs(1) pkcs-9(9) smime(16) alg(3) TBD-DHKEM5 }
+
+
+     id-alg-dhkem-x448 OBJECT IDENTIFIER ::= { iso(1) member-body(2) us(840)
+         rsadsi(113549) pkcs(1) pkcs-9(9) smime(16) alg(3) TBD-DHKEM6 }
+
 
      kema-dhkem KEM-ALGORITHM ::= {
-         IDENTIFIER id-alg-dhkem
-         PARAMS TYPE DHKemParameters ARE optional
+         IDENTIFIER {id-alg-dhkem-ecdh-p256 |
+                     id-alg-dhkem-ecdh-brainpoolp256r1 |
+                     id-alg-dhkem-x25519 |
+                     id-alg-dhkem-ecdh-p384 |
+                     id-alg-dhkem-ecdh-brainpoolp384r1 |
+                     id-alg-dhkem-x448 }
+         PARAMS ARE absent
          PUBLIC-KEYS { pk-dh | pk-ec | pk-X25519 | pk-X448 }
          UKM ARE optional
-         SMIME-CAPS { TYPE DHKemParameters IDENTIFIED BY id-kem-dhkem } }
+         SMIME-CAPS { ??? } }
 
    END
 
