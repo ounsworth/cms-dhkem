@@ -304,9 +304,7 @@ blah blah KDF and kekLen MUST be the same as specified in KEMRI ... copy the lan
 # ASN.1 Module
 
 In order to carry a DHKEM inside a CMS KEMRecipientInfo {{I-D.ietf-lamps-cms-kemri}},
-we define `id-kem-dhkem`, `kema-dhkem`, and `DHKemParameters`.
-
-TODO: sync this up with the extra stuff added in the body.
+we define OIDs for each DHKEM algorithm.
 
 ~~~ ASN.1
 
